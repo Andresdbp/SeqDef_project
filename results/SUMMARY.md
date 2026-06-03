@@ -92,6 +92,25 @@ single-threaded BLAS, R 4.4.2** — 36 points from **n = 100 to 100,000**.
   that write, so the data were recovered from the job's stdout log (`results/grace_runtime_18719664.out`)
   via `analyses/recover_grace_runtime.R`. A clean rerun would cap n at ≤120k or request ≥1.5 TB.*
 
+## §1.4b — Exact O(n) algorithm for the exponential kernel (Analysis 7) → `traversal_benchmark.csv`, `figS_runtime.pdf`
+The exponential kernel admits an **exact linear-time, linear-memory** algorithm. Because the
+cophenetic distance is additive along tree paths and exp(−λd) = ∏ exp(−λ·edge/T), the weighted
+availability A = W·s is computed by a two-pass sum-product tree traversal (Felsenstein-style) — **no
+n×n matrix is built**. (Gaussian uses d² and linear uses 1−λd, neither of which factorizes, so they
+keep the dense O(n²) path.)
+- **Exact:** matches the dense result to ~1e-16 across `rtree`/`rcoal`, n=10–1000, λ=1–20, and the
+  full `auto_max` pipeline; reproduces the Chondrichthyes MCC result identically (λ=4.80,
+  *C. atromarginatus* rank 9).
+- **Scaling (single λ, laptop):** n=10⁴ → 0.01 s / 49 MB; n=10⁵ → 0.06 s / 74 MB (dense = 447 GB);
+  **n=10⁶ → 0.9 s / ~0.37 GB** (dense would need ~48 TB). ~13,000× faster and ~6,000× less memory at
+  n=10⁵; reaches whole-tree-of-life scale on commodity hardware.
+- **`auto_max` for the exponential kernel is now O(k·n)** (k = λ-grid length).
+- **Implication for M4 / "why exponential":** the same memoryless/multiplicative property that makes
+  the exponential the natural biological model (constant proportional decay of shared information) is
+  exactly what makes it exactly computable in O(n). This turns the manuscript's "sparse-kernel
+  approximation is future work" into "we provide an *exact* O(n) algorithm for the default kernel."
+- Implemented on git branch `linear-time-exp` (merged into `revision-jeb`); helper `.seqdef_exp_avail`.
+
 ## §2.6 — Figure 1 regenerated with λ (Analysis 5)  → `figures/fig1.pdf`, `fig1_values.csv`
 - Rebuilt from a REAL `SeqDef()` run on the 10-taxon toy tree (taxa10 = only sequenced tip; taxa9 = its sister).
 - toy-tree auto_max **λ = 1.2**; figure shows three horizons: **λ = 1.2 (auto), 5, 15**.

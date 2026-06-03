@@ -111,6 +111,18 @@ keep the dense O(n²) path.)
   approximation is future work" into "we provide an *exact* O(n) algorithm for the default kernel."
 - Implemented on git branch `linear-time-exp` (merged into `revision-jeb`); helper `.seqdef_exp_avail`.
 
+## Brownian-motion kernel (Analysis 8) → `brownian_comparison.csv`, `figS_brownian.pdf`
+Added `kernel="brownian"`: a parameter-free phylogenetic correlation (shared ancestry under BM),
+computed in O(n) via the three-point structure (exact vs dense `cov2cor(vcv())`, diff ~1e-15).
+- **It is the flat limit of the exponential:** ρ(BM, exp λ=0.5) = 0.98; it sits at the low-λ,
+  low-discrimination end of the variance-vs-λ curve (auto_max picks the peak, λ≈4.8).
+- On Chondrichthyes it is **less discriminating** (var 0.038 vs 0.045 at auto_max) and selects a
+  **different top target** (*Callorhinchus*, a deep-diverging chimaera) — a concrete illustration of
+  why the tunable exponential is preferred.
+- Efficiency nuance: BM is **also O(n)** (three-point), so the precise claim is "the exponential
+  uniquely combines O(n) with a *tunable* horizon"; Gaussian/linear are O(n²). (Wording updated in
+  SUMMARY §1.4b, the rebuttal, and the change-list.)
+
 ## §2.6 — Figure 1 regenerated with λ (Analysis 5)  → `figures/fig1.pdf`, `fig1_values.csv`
 - Rebuilt from a REAL `SeqDef()` run on the 10-taxon toy tree (taxa10 = only sequenced tip; taxa9 = its sister).
 - toy-tree auto_max **λ = 1.2**; figure shows three horizons: **λ = 1.2 (auto), 5, 15**.

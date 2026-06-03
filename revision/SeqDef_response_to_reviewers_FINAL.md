@@ -98,13 +98,17 @@ and the top target is preserved (in the top set for 16/20, 15/20 and 16/20 poste
 respectively). We also justify the exponential kernel on principle — it yields a single,
 interpretable "phylogenetic half-life" horizon and is standard in distance-decay biodiversity
 measures (Pavoine et al. 2005) and sequence-novelty work (Marini et al. 2022) — and we
-**softened the loose claim** that a small λ "simulates" Brownian motion to a qualitative analogy,
-since we did not implement the Brownian covariance kernel (Supplementary Fig. S3). We additionally
-note a decisive computational argument for the exponential default (developed under 1.4): because
-exp(−λd) is the *only* one of the three kernels that factorizes along tree paths, it alone admits an
-exact O(n)-time, O(n)-memory algorithm; the Gaussian (d²) and linear (1−λd) kernels are inherently
-O(n²). The same memoryless, per-branch-multiplicative property that makes the exponential the
-natural model of molecular-information decay is therefore what makes it uniquely scalable.
+implemented a fourth, parameter-free **Brownian-motion kernel** (phylogenetic correlation) and use it
+to make the earlier Brownian remark precise: it is exactly the flat, low-λ limit of the exponential
+(Spearman ρ ≈ 0.98 with the exponential at λ ≈ 0.5), and on the Chondrichthyes data it is less
+discriminating and selects a different top target — illustrating the value of the exponential's
+tunable horizon (Supplementary Fig. S7). We additionally note a decisive computational argument for
+the exponential default (developed under 1.4): among the distance-decay kernels, exp(−λd) is the only
+one that factorizes along tree paths, so it alone admits an exact O(n)-time, O(n)-memory algorithm,
+whereas the Gaussian (d²) and linear (1−λd) kernels are O(n²). (The Brownian kernel is also O(n) via
+the three-point structure, but parameter-free.) The exponential therefore **uniquely combines O(n)
+scalability with a tunable horizon**, and the same memoryless, per-branch-multiplicative property
+underlies both its biological naturalness and its computational tractability.
 
 ### 1.3 Lack of comparison with existing methods
 > *The manuscript mentions EDGE but does not compare against it.*

@@ -29,11 +29,11 @@ library(stringr)
 # To run from scratch, uncomment the API calls below:
 
 # Sys.setenv(
-#   ENTREZ_KEY = "9ddac7f8b6b68674a120d97191ad836b3908",
-#   NCBI_API_KEY = "9ddac7f8b6b68674a120d97191ad836b3908"
+#   ENTREZ_KEY = Sys.getenv("ENTREZ_KEY"),       # set your own NCBI Entrez key
+#   NCBI_API_KEY = Sys.getenv("NCBI_API_KEY")
 # )
 # rentrez::set_entrez_key(Sys.getenv("ENTREZ_KEY"))
-# api <- init_api("JHxnLuf9N7182D578jLL2QPWYjrfz9ZjMF8Y")
+# api <- init_api(Sys.getenv("IUCN_REDLIST_KEY"))  # set your own IUCN Red List key
 # CHANGE BEFORE PUBLISHING *********************************************
 # Sys.setenv(IUCN_REDLIST_KEY = "YOUR_KEY_HERE")
 # api <- init_api(Sys.getenv("IUCN_REDLIST_KEY"))

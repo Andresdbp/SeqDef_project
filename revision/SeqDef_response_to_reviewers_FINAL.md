@@ -261,8 +261,7 @@ hand-set values; we **regenerated Figure 1 from an actual `SeqDef()` run** on th
 - **Reproducibility housekeeping.** Before public archiving we will remove and rotate the API keys
   embedded in the analysis script, complete the package `DESCRIPTION` (authors, ORCIDs, license)
   and citation, and add unit tests covering the three kernels and the λ-selection edge cases.
-- **Dataset count.** The reproducible pipeline analyses **n = 877** species (phylogeny ∩ IUCN). If
-  the manuscript's "n = 850" reflects a different IUCN version or an additional filter, we will
-  reconcile the figure in the revised Methods.
+- **Dataset count.** We corrected the species count to **n = 877** (the value reproduced by the
+  analysis pipeline; the previous "n = 850" was a transcription error).
 
 *We thank the editor and reviewers for feedback that has measurably strengthened the paper.*

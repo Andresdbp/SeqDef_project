@@ -4,10 +4,9 @@ Generated from `analyses/01–06`. Hardware: Apple Silicon (Darwin 25.5.0 arm64)
 8 cores, **16 GB RAM**, R 4.5.2. All randomness seeded with `set.seed(42)`.
 Tagged to the placeholders in `revision/SeqDef_response_to_reviewers.docx`.
 
-> **Dataset note (flag for manuscript):** the reproducible pipeline prunes to
-> **n = 877** species (MCC tips ∩ IUCN). The manuscript currently states **n = 850**.
-> 55/877 species have an NCBI assembly. *Reconcile this number (likely an IUCN
-> version difference) or state the filter that yields 850.*
+> **Dataset note:** the reproducible pipeline prunes to **n = 877** species
+> (MCC tips ∩ IUCN; 55/877 have an NCBI assembly). The manuscript's earlier
+> "n = 850" was an error and is corrected to **n = 877**.
 
 ---
 

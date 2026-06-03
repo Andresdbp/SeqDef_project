@@ -20,7 +20,7 @@ Three things to do globally first:
 1. **Set every occurrence of "SeqDef", "Priority", and label subscripts (norm, median, depth) in
    upright (roman) type**, reserving italics for true variables (*S*, *w*, *d*, *A*, *λ*, *n*, *i*, *f*). [R1 #5]
 2. **Add the new references** (block at the end of this document) to the reference list.
-3. Decide on the **n = 850 vs 877** discrepancy (see Methods edit M-7).
+3. **Replace "n = 850" with "n = 877"** (data-derived; see Methods edit M-7).
 
 ---
 
@@ -108,9 +108,8 @@ Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is 
 (phylogeny ∩ IUCN; 55 with an NCBI assembly).
 
 - **FIND:** "the intersection of species present in both the IUCN and phylogenetic datasets (n = 850)."
-- **REPLACE WITH:** either "(n = 877)" — matching the current pipeline — **or** add the filter that
-  produces 850 (e.g., excluding additional IUCN categories) and state it. *Verify against your IUCN
-  download version before choosing.*
+- **REPLACE WITH:** "the intersection of species present in both the IUCN and phylogenetic datasets (n = 877)."
+  (877 is the data-derived count reproduced by the pipeline; the earlier 850 was an error.)
 
 **Edit M-8 [R1 #1, R2 #2.3].** Justify the binary coding and point to the continuous analysis.
 

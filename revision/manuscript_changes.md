@@ -7,6 +7,15 @@ paper** for easy application; each is tagged with the reviewer point it answers.
 - **REPLACE WITH** / **INSERT** = the new text.
 - Numbers come from `results/SUMMARY.md` (reproducible via `analyses/run_all.R`).
 
+> **Reconciled against the live Google Doc ("manuscript", 2026-06-03).** Every FIND anchor below
+> matches the document's *visible* text; the equations are present as the same plain text shown
+> (e.g. `wfi=exp(-dfi Tdepth)`, `Priority = SeqDefmedian2GE`), so the find/replace works directly.
+> Two formatting notes: (a) citations are **Paperpile-managed links** (italic *et al.* + hyperlink) —
+> when adding the new references (Soares 2023, Gumbs 2023, Kembel 2010) insert them **through
+> Paperpile** so they join the managed reference list, or add them manually and append the entries
+> from the "New references" block; (b) the manuscript has lost several standalone **λ** glyphs — see
+> the consolidated Edit M-3b.
+
 Three things to do globally first:
 1. **Set every occurrence of "SeqDef", "Priority", and label subscripts (norm, median, depth) in
    upright (roman) type**, reserving italics for true variables (*S*, *w*, *d*, *A*, *λ*, *n*, *i*, *f*). [R1 #5]
@@ -63,6 +72,14 @@ generality of S is visible up front.
 
 - **A_f equation (Eq. 1):** render as **A_f = Σ_{i=1}^{n} w_fi · S_i** (sum index explicit).
 - **SeqDef equation (Eq. 3):** render as **SeqDef_f = 1 − A_{f,norm}**, with "SeqDef" upright and "norm" an upright subscript.
+
+**Edit M-3b [R1 #5 — dropped λ glyphs].** The live document has lost the standalone λ symbol in several
+places (it renders as an empty "()" or a blank). Verified against the Drive doc — restore λ at each:
+- Methods: **FIND** "scaled by , a user-specified decay parameter" → **"scaled by λ, a user-specified decay parameter"** (same as M-2).
+- Methods (kernel choice): **FIND** "the tunable decay parameter lambda ()," → **"the tunable decay parameter λ,"**
+- Discussion (Practical Considerations): **FIND** "the choice of the decay parameter () dictates" → **"the choice of the decay parameter λ dictates"**
+- Discussion (Practical Considerations): **FIND** "anchor  to the genus-level phylogenetic half-life" → **"anchor λ to the genus-level phylogenetic half-life"**
+  *(Tip: in Google Docs, searching the blank "()" is hard — search the surrounding words shown above.)*
 
 **Edit M-4 [R1 #2b].** Add a principled justification of the kernel and mention the new argument.
 Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is flexible…":

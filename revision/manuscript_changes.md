@@ -67,7 +67,7 @@ generality of S is visible up front.
 **Edit M-4 [R1 #2b].** Add a principled justification of the kernel and mention the new argument.
 Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is flexible…":
 
-- **INSERT (after that paragraph):** "Although the framework admits any kernel, the package implements three (`kernel = "exponential"`, `"gaussian"`, `"linear"`) and we adopt the exponential kernel as the default. It is the natural choice because it yields a single, interpretable tunable horizon — the phylogenetic half-life — and is standard in distance-decay biodiversity measures (Pavoine et al., 2005) and sequence-novelty work (Marini et al., 2022). A kernel-comparison analysis (below; Supplementary Fig. S3) confirms that the prioritization is robust to this choice."
+- **INSERT (after that paragraph):** "Although the framework admits any kernel, the package implements three — `kernel = "exponential"` (default), `"gaussian"`, and `"linear"` — that encode three models of how informational redundancy fades with evolutionary distance. The **exponential** kernel, exp(−λd), models a constant *proportional*, memoryless decay (redundancy halves every fixed distance — the phylogenetic half-life), mirroring how molecular similarity saturates with divergence under a clock-like process. The **Gaussian** kernel, exp(−λd²), is flat at small distances and then falls sharply, encoding a buffer of near-equivalence among close relatives with a crisp outer boundary. The **linear** kernel, max(0, 1−λd), declines at a constant absolute rate to a hard cutoff (compact support), best read as an explicit bounded horizon ('count only relatives within this window'). We adopt the exponential as the default for four reasons: (i) it is the natural model of molecular-information decay; (ii) it provides a single interpretable horizon (the half-life); (iii) it is standard in distance-decay biodiversity measures (Pavoine et al., 2005) and sequence-novelty work (Marini et al., 2022); and (iv) — uniquely among the three — because exp(−λd) factorizes into independent per-branch factors, it admits an *exact* linear-time, linear-memory algorithm (see Computational benchmarks), so it is the only kernel that scales exactly to the whole tree of life. Notably, the same memoryless, per-branch-multiplicative property underlies both its biological naturalness and its computational tractability. A kernel-comparison analysis (Supplementary Fig. S3) confirms the prioritization is robust to the choice regardless."
 
 ---
 
@@ -76,7 +76,7 @@ Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is 
 **Edit M-5 [R1 #4].** Replace the unsupported efficiency claim with a complexity statement.
 
 - **FIND:** "The deficiency calculation is fully vectorized using matrix algebra (WS), ensuring high computational efficiency even for large phylogenies."
-- **REPLACE WITH:** "The deficiency calculation is fully vectorized as a matrix–vector product (**W S**). For *n* tips the cophenetic matrix, the weight matrix and the product are each O(*n*²) in time and memory, and automatic λ selection adds a constant factor (a scan of up to 491 λ values with early stopping), giving O(*k·n*²) with *k* ≤ 491. The method is therefore efficient at clade-to-class scale and remains tractable to ~10⁵ tips on large-memory hardware, with the dense O(*n*²) matrix becoming the binding constraint only near tree-of-life scale; we quantify this with empirical benchmarks below."
+- **REPLACE WITH:** "The deficiency calculation is fully vectorized as a matrix–vector product (**W S**). For *n* tips the cophenetic matrix, the weight matrix and the product are each O(*n*²) in time and memory, and automatic λ selection adds a constant factor (a scan of up to 491 λ values with early stopping), giving O(*k·n*²) with *k* ≤ 491. **For the default exponential kernel this cost is avoided entirely:** because exp(−λ*d*) factorizes along tree paths, the weighted availability is computed by an exact two-pass tree traversal in O(*n*) time and memory, forming no distance matrix at all; the O(*n*²) cost therefore applies only to the Gaussian and linear kernels. We quantify both regimes with empirical benchmarks below."
 
 **Edit M-6 [R1 #2b].** Note the kernel argument in the function description.
 
@@ -159,10 +159,13 @@ Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is 
 > 0.04 s at n = 1,000, 6.2 s at n = 10,000 and 808 s (≈13.5 min) at n = 100,000. Peak memory grew
 > from ~4.7 GB at n = 10,000 to 447 GB at n = 100,000; the dense O(n²) distance and weight matrices —
 > not runtime — are the binding constraint, and a benchmark run exceeded an 800 GB allocation at
-> n = 150,000. By extrapolation, whole-eukaryote scale (n ~ 10⁶) would require tens of terabytes,
-> motivating sparse-kernel approximations for the largest trees. The 877-tip Chondrichthyes analysis
-> ran in 0.02 s (fixed λ) / 0.21 s (auto_max) per tree, and the full 100-tree posterior completed in
-> ≈40 s (Supplementary Fig. S6)."
+> n = 150,000 (these O(n²) figures govern the Gaussian and linear kernels). **For the default
+> exponential kernel, the exact O(n) traversal removes this constraint entirely:** it returns
+> identical scores (agreement ≤ 1e-16) but a single call runs at n = 100,000 in 0.06 s using 74 MB
+> (versus 808 s and 447 GB for the dense computation) and at n = 1,000,000 in under 1 s using ~0.4 GB,
+> on a laptop — so prioritization scales exactly to whole-tree-of-life size for the default kernel.
+> The 877-tip Chondrichthyes analysis ran in 0.02 s (fixed λ) / 0.21 s (auto_max) per tree, and the
+> full 100-tree posterior completed in ≈40 s (Supplementary Fig. S6)."
 
 ---
 
@@ -214,7 +217,7 @@ Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is 
 **Edit D-3 [R1 #4].** In "Practical Considerations" / Conclusions, calibrate the efficiency wording.
 
 - **FIND (Conclusions):** "It is computationally efficient, interoperable with standard phylogenetic and bioinformatic R packages, and adaptable to context-dependent weighting schemes."
-- **REPLACE WITH:** "It is computationally efficient at clade scale (hundreds to a few thousand tips), with an explicit O(n²)-memory cost that makes naive whole-tree-of-life application memory-bound; because distant pairs contribute negligibly, a truncated or nearest-neighbour kernel is a natural route to larger trees. It is interoperable with standard phylogenetic and bioinformatic R packages and adaptable to context-dependent weighting schemes."
+- **REPLACE WITH:** "It is computationally efficient: for the default exponential kernel an exact linear-time, linear-memory tree traversal lets it scale to phylogenies of millions of tips, while the Gaussian and linear kernels use a dense O(n²) computation suited to clade-to-class scale. It is interoperable with standard phylogenetic and bioinformatic R packages and adaptable to context-dependent weighting schemes."
 
 ---
 
@@ -253,10 +256,12 @@ toy tree). New caption:
   and Priority (B) computed with binary S vs an illustrative continuous score S = count/(count+1);
   rankings are highly concordant (ρ = 0.96 and 0.98)."
 - **Fig. S6 — `figS_runtime.pdf` [R1 #4].** "Runtime (A) and peak memory (B) of a single SeqDef
-  calculation versus tree size n (log–log; single-threaded; n = 100 to 100,000 on a large-memory
-  node). Points are medians over up to 100 replicate trees; dotted lines are O(n²) references.
-  Fitted slopes are 2.09 (time) and 1.94 (memory), confirming quadratic scaling; peak memory reaches
-  447 GB at n = 100,000."
+  calculation versus tree size n (log–log; single-threaded). Orange: the dense O(n²) computation used
+  by the Gaussian/linear kernels (n = 100 to 100,000; peak memory 447 GB at n = 100,000, beyond which
+  it exhausts an 800 GB allocation). Green: the exact O(n) tree traversal used by the default
+  exponential kernel (n = 100 to 1,000,000; ~0.4 GB and < 1 s at n = 1,000,000, on a laptop). Dotted
+  lines are O(n²) and O(n) references. The two methods give identical scores (≤ 1e-16); the
+  exponential kernel scales exactly to whole-tree-of-life size."
 
 ---
 

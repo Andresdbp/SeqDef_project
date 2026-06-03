@@ -99,7 +99,12 @@ respectively). We also justify the exponential kernel on principle — it yields
 interpretable "phylogenetic half-life" horizon and is standard in distance-decay biodiversity
 measures (Pavoine et al. 2005) and sequence-novelty work (Marini et al. 2022) — and we
 **softened the loose claim** that a small λ "simulates" Brownian motion to a qualitative analogy,
-since we did not implement the Brownian covariance kernel (Supplementary Fig. S3).
+since we did not implement the Brownian covariance kernel (Supplementary Fig. S3). We additionally
+note a decisive computational argument for the exponential default (developed under 1.4): because
+exp(−λd) is the *only* one of the three kernels that factorizes along tree paths, it alone admits an
+exact O(n)-time, O(n)-memory algorithm; the Gaussian (d²) and linear (1−λd) kernels are inherently
+O(n²). The same memoryless, per-branch-multiplicative property that makes the exponential the
+natural model of molecular-information decay is therefore what makes it uniquely scalable.
 
 ### 1.3 Lack of comparison with existing methods
 > *The manuscript mentions EDGE but does not compare against it.*
@@ -139,14 +144,21 @@ are sequenced (Supplementary Fig. S4; divergence table in the supplement).
   0.04 s at n = 1,000, 6.2 s at n = 10,000 and **808 s (13.5 min) at n = 100,000**.
 - **Memory is the binding constraint, not runtime.** Peak memory grows quadratically — ~4.7 GB at
   n = 10,000 and **447 GB at n = 100,000**; we pushed the benchmark until memory exhaustion, and the
-  n = 150,000 run exceeded an 800 GB allocation, consistent with the fit. By extrapolation,
-  n ≈ 250,000 requires ≈ 2.8 TB and whole-eukaryote scale (n ~ 10⁶) tens of TB.
+  n = 150,000 run exceeded an 800 GB allocation, consistent with the fit. (These O(n²) figures apply
+  to the Gaussian and linear kernels, which use the dense distance matrix.)
+- **For the default exponential kernel we now remove the O(n²) wall entirely.** Because exp(−λd)
+  factorizes along tree paths, the phylogenetically weighted availability is computed by an exact
+  O(n)-time, O(n)-memory tree traversal — no distance matrix is ever formed. It is identical to the
+  dense result (≤ 1e-16) yet runs a single call at n = 100,000 in **0.06 s using 74 MB** (vs 808 s /
+  447 GB dense) and at **n = 1,000,000 in < 1 s using ~0.4 GB**, on a laptop. The default kernel
+  therefore scales *exactly* to whole-tree-of-life size, superseding the sparse-kernel approximation
+  we had flagged as future work (Supplementary Fig. S6 now contrasts the two regimes).
 - **Real data.** The 877-tip Chondrichthyes tree runs in **0.02 s** (single λ) / **0.21 s**
   (`auto_max`); the full 100-tree posterior with `auto_max` completes in ≈ **40 s**.
-- We therefore state that SeqDef is **efficient at clade-to-class scale and demonstrably tractable to
-  n = 100,000** on a large-memory node, with the dense O(n²) matrix — not runtime — as the binding
-  constraint at tree-of-life scale; because weights decay with distance, a truncated/sparse kernel is
-  a natural route to larger trees (future work) (Supplementary Fig. S6).
+- We therefore state that SeqDef with the **default exponential kernel scales exactly to whole-tree-
+  of-life size in O(n)**, while the Gaussian/linear kernels are O(n²) and efficient at clade-to-class
+  scale (Supplementary Fig. S6). For those dense kernels, a truncated/sparse approximation remains a
+  natural route to the very largest trees (future work).
 
 ### 1.5 Typographical problems in the mathematical notation
 > *In Eq. 4, "Priority" (italic P) and "SeqDef" (italic f) collide with variable notation; set

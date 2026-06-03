@@ -1,8 +1,18 @@
 # ============================================
 # DEFINITION: SeqDef Function
 # ============================================
-SeqDef <- function(tree, df, data.col = 2, invert = TRUE, scale = TRUE, lambda = "auto_max"){
-  
+SeqDef <- function(tree, df, data.col = 2, invert = TRUE, scale = TRUE, lambda = "auto_max",
+                   kernel = c("exponential", "gaussian", "linear")){
+
+  kernel <- match.arg(kernel)
+  # Distance-decay kernel on normalized distance x = d / tree_depth.
+  kern <- function(x, lam, type) {
+    switch(type,
+           exponential = exp(-lam * x),
+           gaussian    = exp(-lam * x^2),
+           linear      = { z <- 1 - lam * x; z * (z > 0) })  # clamp at 0, preserve matrix dims
+  }
+
   # 1. Convert & Align Data
   df <- as.data.frame(df)
   
@@ -42,7 +52,7 @@ SeqDef <- function(tree, df, data.col = 2, invert = TRUE, scale = TRUE, lambda =
     
     # Helper to calc variance for a single lambda
     calc_var <- function(x) {
-      w_mat <- exp(-x * norm_dists)
+      w_mat <- kern(norm_dists, x, kernel)
       raw_scores <- as.numeric(w_mat %*% s_vec)
       rng <- range(raw_scores)
       if(rng[2] - rng[1] < 1e-9) return(0)
@@ -124,9 +134,9 @@ SeqDef <- function(tree, df, data.col = 2, invert = TRUE, scale = TRUE, lambda =
     final_lambda <- lambda
   }
   
-  # 4. Kernel Calculation (Exponential Decay)
+  # 4. Kernel Calculation
   # Note: dist.matrix / td scales input distances to 0-1
-  dist.prop <- exp(-final_lambda * dist.matrix / td)
+  dist.prop <- kern(dist.matrix / td, final_lambda, kernel)
   
   # 5. Vectorized Calculation
   raw_scores <- dist.prop %*% as.numeric(df[, data.col])

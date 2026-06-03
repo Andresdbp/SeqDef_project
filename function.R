@@ -45,8 +45,40 @@
   A[tree$tip.label]                                # return in input tip order
 }
 
+# ----------------------------------------------------------------------------
+# Brownian-motion covariance kernel (parameter-free), correlation form, O(n).
+#
+# Weight w_fi = phylogenetic CORRELATION under BM = C_fi / sqrt(C_ff C_ii), where
+# C_fi = shared root-to-MRCA path length (BM covariance) and C_ii = root-to-tip
+# depth. w in [0,1], diagonal 1. There is no lambda (sigma^2 cancels under
+# normalization). Availability A_f = sum_i w_fi s_i is computed in O(n) via the
+# three-point structure: with s'_i = s_i / sqrt(C_ii) and subtree sums S'(v),
+# A_f = (1/sqrt(C_ff)) * sum_{v on root->f path} L_v * S'(v). For an ultrametric
+# tree this equals the exponential kernel's flat limit, w_fi = 1 - d_fi/(2T).
+# ----------------------------------------------------------------------------
+.seqdef_bm_avail <- function(tree, s) {
+  n   <- length(tree$tip.label)
+  phy <- ape::reorder.phylo(tree, "postorder")
+  E   <- phy$edge; L <- phy$edge.length; nN <- n + phy$Nnode
+  depth <- ape::node.depth.edgelength(phy)         # root-to-node distance
+  dtip  <- depth[seq_len(n)]; dtip[dtip <= 0] <- .Machine$double.eps
+  sp    <- s / sqrt(dtip)                          # s'_i = s_i / sqrt(C_ii)
+
+  Sp <- numeric(nN); Sp[seq_len(n)] <- sp          # subtree sums of s' (post-order)
+  for (k in seq_len(nrow(E))) Sp[E[k, 1]] <- Sp[E[k, 1]] + Sp[E[k, 2]]
+
+  G <- numeric(nN)                                 # G[v] = sum_{u on root->v} L_u * S'(u)
+  for (k in rev(seq_len(nrow(E)))) {
+    p <- E[k, 1]; c <- E[k, 2]
+    G[c] <- G[p] + L[k] * Sp[c]
+  }
+  A <- G[seq_len(n)] / sqrt(dtip)                  # divide by sqrt(C_ff)
+  names(A) <- phy$tip.label
+  A[tree$tip.label]
+}
+
 SeqDef <- function(tree, df, data.col = 2, invert = TRUE, scale = TRUE, lambda = "auto_max",
-                   kernel = c("exponential", "gaussian", "linear")){
+                   kernel = c("exponential", "gaussian", "linear", "brownian")){
 
   kernel <- match.arg(kernel)
   # Distance-decay kernel on normalized distance x = d / tree_depth (dense path).
@@ -72,7 +104,7 @@ SeqDef <- function(tree, df, data.col = 2, invert = TRUE, scale = TRUE, lambda =
   # 3. Distance matrix is only needed for non-exponential kernels OR by_genus
   #    calibration. The exponential path is matrix-free (O(n)).
   is_bygenus  <- (length(lambda) == 1 && is.character(lambda) && lambda == "by_genus")
-  need_matrix <- (kernel != "exponential") || is_bygenus
+  need_matrix <- (kernel %in% c("gaussian", "linear")) || (is_bygenus && kernel == "exponential")
   norm_dists  <- NULL
   if (need_matrix) {
     dist.matrix <- ape::cophenetic.phylo(tree)
@@ -82,15 +114,17 @@ SeqDef <- function(tree, df, data.col = 2, invert = TRUE, scale = TRUE, lambda =
 
   # Raw phylogenetically-weighted availability A for a given lambda.
   avail <- function(lam) {
-    if (kernel == "exponential")
-      .seqdef_exp_avail(tree, s_vec, lam, td)                       # O(n) traversal
-    else
-      as.numeric(kern(norm_dists, lam, kernel) %*% s_vec)           # O(n^2) dense
+    if (kernel == "exponential")   .seqdef_exp_avail(tree, s_vec, lam, td)        # O(n) traversal
+    else if (kernel == "brownian") .seqdef_bm_avail(tree, s_vec)                  # O(n), parameter-free
+    else                           as.numeric(kern(norm_dists, lam, kernel) %*% s_vec)  # O(n^2) dense
   }
 
   # 4. Lambda selection
   final_lambda <- 0
-  if (length(lambda) == 1 && is.character(lambda) && lambda == "auto_max") {
+  if (kernel == "brownian") {
+    if (is.numeric(lambda)) message("Brownian kernel is parameter-free; the supplied lambda is ignored.")
+    final_lambda <- NA_real_
+  } else if (length(lambda) == 1 && is.character(lambda) && lambda == "auto_max") {
     message("Optimizing Lambda: Searching for peak variance (Stopping if variance drops >10% below peak)...")
     lambda_seq <- seq(1, 50, 0.1)
 

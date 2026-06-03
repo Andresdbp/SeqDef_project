@@ -67,7 +67,7 @@ generality of S is visible up front.
 **Edit M-4 [R1 #2b].** Add a principled justification of the kernel and mention the new argument.
 Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is flexible…":
 
-- **INSERT (after that paragraph):** "Although the framework admits any kernel, the package implements three — `kernel = "exponential"` (default), `"gaussian"`, and `"linear"` — that encode three models of how informational redundancy fades with evolutionary distance. The **exponential** kernel, exp(−λd), models a constant *proportional*, memoryless decay (redundancy halves every fixed distance — the phylogenetic half-life), mirroring how molecular similarity saturates with divergence under a clock-like process. The **Gaussian** kernel, exp(−λd²), is flat at small distances and then falls sharply, encoding a buffer of near-equivalence among close relatives with a crisp outer boundary. The **linear** kernel, max(0, 1−λd), declines at a constant absolute rate to a hard cutoff (compact support), best read as an explicit bounded horizon ('count only relatives within this window'). We adopt the exponential as the default for four reasons: (i) it is the natural model of molecular-information decay; (ii) it provides a single interpretable horizon (the half-life); (iii) it is standard in distance-decay biodiversity measures (Pavoine et al., 2005) and sequence-novelty work (Marini et al., 2022); and (iv) — uniquely among the three — because exp(−λd) factorizes into independent per-branch factors, it admits an *exact* linear-time, linear-memory algorithm (see Computational benchmarks), so it is the only kernel that scales exactly to the whole tree of life. Notably, the same memoryless, per-branch-multiplicative property underlies both its biological naturalness and its computational tractability. A kernel-comparison analysis (Supplementary Fig. S3) confirms the prioritization is robust to the choice regardless."
+- **INSERT (after that paragraph):** "Although the framework admits any kernel, the package implements four — `kernel = "exponential"` (default), `"gaussian"`, `"linear"`, and `"brownian"` — encoding different models of how informational redundancy relates to evolutionary divergence. The **exponential** kernel, exp(−λd), models a constant *proportional*, memoryless decay (redundancy halves every fixed distance — the phylogenetic half-life), mirroring how molecular similarity saturates with divergence under a clock-like process. The **Gaussian** kernel, exp(−λd²), is flat at small distances then falls sharply (a buffer of near-equivalence with a crisp outer boundary). The **linear** kernel, max(0, 1−λd), declines at a constant absolute rate to a hard cutoff (an explicit bounded horizon). The **Brownian** kernel weights by shared ancestry (the phylogenetic correlation under Brownian motion) and is *parameter-free*. We adopt the exponential as the default for four reasons: (i) it is the natural model of molecular-information decay; (ii) it provides a single interpretable, tunable horizon (the half-life); (iii) it is standard in distance-decay biodiversity measures (Pavoine et al., 2005) and sequence-novelty work (Marini et al., 2022); and (iv) because exp(−λd) factorizes into independent per-branch factors, it admits an *exact* O(n)-time, O(n)-memory algorithm (see Computational benchmarks). The exponential thus **uniquely combines O(n) scalability with a tunable horizon**: the Gaussian and linear kernels are O(n²), while the Brownian kernel — though also O(n) — is parameter-free and corresponds to the exponential at a fixed, small λ (≈0.5), i.e. its flat, low-discrimination limit (on the Chondrichthyes data it is less discriminating and selects a different top target; Supplementary Fig. S7). The same memoryless, per-branch-multiplicative property underlies both the exponential's biological naturalness and its computational tractability. A kernel-comparison analysis (Supplementary Fig. S3) confirms the prioritization is robust across the distance-decay kernels."
 
 ---
 
@@ -81,7 +81,7 @@ Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is 
 **Edit M-6 [R1 #2b].** Note the kernel argument in the function description.
 
 - **FIND:** "the function includes two algorithms for automated lambda determination."
-- **REPLACE WITH:** "the function includes two algorithms for automated lambda determination and a `kernel` argument selecting the distance-decay kernel (exponential, Gaussian, or linear; exponential by default)."
+- **REPLACE WITH:** "the function includes two algorithms for automated lambda determination and a `kernel` argument selecting the weighting kernel — exponential (default), Gaussian, linear, or a parameter-free Brownian-motion correlation."
 
 ---
 
@@ -193,7 +193,7 @@ Append to the paragraph that begins "The choice of the weight matrix W=[wfi] is 
 **Edit D-1 [R1 #2b].** Soften the Brownian-motion claim.
 
 - **FIND:** "Additionally, we want to allow the users the ability to fit this tool to their preferred model of information decay. While not coded, the results of SeqDef can simulate what could be found using a Brownian motion model by using a very small value of lambda higher than zero."
-- **REPLACE WITH:** "Additionally, the framework can accommodate the user's preferred model of information decay. As a qualitative analogy, a small λ produces a broad, slowly decaying weighting reminiscent of a Brownian-motion covariance structure; a formal Brownian-covariance kernel could be added but is not implemented here, and we do not claim the exponential kernel reproduces it exactly."
+- **REPLACE WITH:** "Additionally, the framework accommodates the user's preferred model of information decay; the package implements a parameter-free Brownian-motion kernel (the phylogenetic correlation under Brownian motion). This kernel is exactly the flat, low-λ limit of the exponential (it matches the exponential at λ ≈ 0.5; Spearman ρ ≈ 0.98 on the Chondrichthyes tree), and being parameter-free it cannot be calibrated to a phylogenetic horizon — on our data it is less discriminating and selects a different top target (Supplementary Fig. S7). This makes concrete why we adopt the tunable exponential as the default."
 
 **Edit D-2 [R2 #2.2, R2 #2.4].** Add an extension paragraph (rtrees + taxonomic uncertainty).
 
@@ -262,6 +262,12 @@ toy tree). New caption:
   exponential kernel (n = 100 to 1,000,000; ~0.4 GB and < 1 s at n = 1,000,000, on a laptop). Dotted
   lines are O(n²) and O(n) references. The two methods give identical scores (≤ 1e-16); the
   exponential kernel scales exactly to whole-tree-of-life size."
+- **Fig. S7 — `figS_brownian.pdf` [R1 #2b].** "The Brownian-motion kernel as the flat limit of the
+  exponential. (A) Variance of SeqDef scores on the Chondrichthyes MCC tree as a function of λ; the
+  variance-maximizing `auto_max` value (λ ≈ 4.8) is far from the Brownian limit (λ ≈ 0.5), which sits
+  in the low-discrimination region. (B) Per-species SeqDef under the exponential (`auto_max`) versus
+  the parameter-free Brownian kernel; the two rank taxa differently (Spearman ρ ≈ 0.6), and Brownian
+  selects a different top target — illustrating the value of a tunable horizon."
 
 ---
 

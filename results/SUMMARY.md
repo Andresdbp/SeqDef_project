@@ -16,7 +16,7 @@ Tagged to the placeholders in `revision/SeqDef_response_to_reviewers.docx`.
   *Acroteriobatus variegatus* (2), *R. annandalei* (2), *R. rhinobatos* (2) — i.e. the
   CR guitarfish cluster, exactly as the manuscript narrative says.
 
-## §1.1 / 2.3 — Continuous S (Analysis 6)  → `continuous_S_example.csv`, `figS_continuousS.pdf`
+## §1.1 / 2.3 — Continuous S (Analysis 6) — DROPPED from the manuscript (binary coding is justified on its own; script kept for reference)  → `continuous_S_example.csv`, `figS_continuousS.pdf`
 Illustrative continuous S from NCBI assembly count: **S = count/(count+1)** (no API call).
 - Spearman ρ(SeqDef) binary vs continuous = **0.959**
 - Spearman ρ(Priority) binary vs continuous = **0.981**; **top-10 overlap = 10/10**
@@ -137,5 +137,6 @@ computed in O(n) via the three-point structure (exact vs dense `cov2cor(vcv())`,
 
 ## New / regenerated figures
 - `figures/fig1.pdf` (regenerated, λ-annotated) — MAIN
-- `figures/figS_lambda_stability.pdf`, `figS_kernel.pdf`, `figS_edge_vs_seqdef.pdf`,
-  `figS_runtime.pdf`, `figS_continuousS.pdf` — SUPPLEMENTARY
+- Supplementary, renumbered **S1–S5**: S1 `figS_lambda_stability.pdf`, S2 `figS_kernel.pdf`,
+  S3 `figS_edge_vs_seqdef.pdf`, S4 `figS_runtime.pdf`, S5 `figS_brownian.pdf`.
+  (`figS_continuousS.pdf` dropped from the submission.)

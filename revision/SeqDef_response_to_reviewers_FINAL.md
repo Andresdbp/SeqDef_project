@@ -16,14 +16,14 @@ each edit is specified in the accompanying manuscript change-list.*
 We thank the Associate Editor and both reviewers for a constructive assessment. We have
 addressed every point. The five major concerns required clarification and evidence rather
 than any change to the statistic itself; we ran four new analyses (all on data already in
-the repository), added a continuous-S example, regenerated Figure 1, added a `kernel`
+the repository), regenerated Figure 1, added a `kernel`
 argument to the package, and corrected the notation.
 
 **Summary of major changes**
 
 - **Variable S.** Clarified that S is a general availability score on [0,1]; the binary
-  case-study coding is framed as a deliberate operational choice. Added worked continuous
-  constructions and a supplementary continuous-S analysis (ρ = 0.98 vs binary; top target unchanged).
+  case-study coding is framed as a deliberate operational choice, with worked continuous
+  constructions given in the Methods (no separate continuous-S run is needed).
 - **λ and kernel.** Added a λ rank-stability analysis, a head-to-head of the two λ-selection
   methods (ρ = 0.998; identical top target in 100/100 trees), and a kernel comparison via a
   new `kernel` argument (exponential/Gaussian/linear; rankings ρ ≥ 0.88).
@@ -59,13 +59,8 @@ requires binary input. We have separated the general definition from the case-st
   presence/absence is objective, uniformly obtainable for all species from a single NCBI query,
   avoids confounding the demonstration with heterogeneous and often-missing quality metrics, and
   matches the Earth BioGenome framing of whether a reference yet exists.
-- We added a **supplementary continuous-S analysis** (S = assembly count/(count+1)). The
-  continuous and binary rankings are highly concordant (Spearman ρ = **0.959** for SeqDef,
-  **0.981** for Priority; top-10 overlap **10/10**; *C. atromarginatus* unchanged at rank 9),
-  while scores redistribute sensibly toward species whose relatives have only single-assembly
-  coverage (e.g., *Carcharhinus falciformis* rises from rank 738 to 389). This converts the
-  point from "S can be continuous" to "it behaves correctly when continuous." (Supplementary
-  Fig. S5.)
+- The binary case-study coding is retained and justified explicitly; the worked constructions
+  above show how a continuous S is specified, so we did not add a separate continuous-S run.
 
 ### 1.2 Dependence on λ and the choice of kernel
 > *Results appear highly dependent on λ and the exponential kernel … the two λ-selection methods
@@ -81,7 +76,7 @@ is highly stable** (ρ median = **0.932**, minimum **0.878** across the whole in
 in [1,25]** (never below 50 %), peaking at ~80 % within the band both automatic methods select
 (λ ≈ 2.6–5). We therefore present this as the λ analogue of our topological-robustness test
 (Fig. 3): the prioritization is robust across a broad λ band, and the top target is the modal,
-auto-selected choice rather than an artifact of one λ (Supplementary Fig. S2).
+auto-selected choice rather than an artifact of one λ (Supplementary Fig. S1).
 
 **(b) The two λ-selection methods are essentially interchangeable.** Across the 100 posterior
 trees, `auto_max` selects λ median **3.40** (95 % interval [2.65, 5.00]) and `by_genus` selects
@@ -102,7 +97,7 @@ implemented a fourth, parameter-free **Brownian-motion kernel** (phylogenetic co
 to make the earlier Brownian remark precise: it is exactly the flat, low-λ limit of the exponential
 (Spearman ρ ≈ 0.98 with the exponential at λ ≈ 0.5), and on the Chondrichthyes data it is less
 discriminating and selects a different top target — illustrating the value of the exponential's
-tunable horizon (Supplementary Fig. S7). We additionally note a decisive computational argument for
+tunable horizon (Supplementary Fig. S5). We additionally note a decisive computational argument for
 the exponential default (developed under 1.4): among the distance-decay kernels, exp(−λd) is the only
 one that factorizes along tree paths, so it alone admits an exact O(n)-time, O(n)-memory algorithm,
 whereas the Gaussian (d²) and linear (1−λd) kernels are O(n²). (The Brownian kernel is also O(n) via
@@ -129,7 +124,7 @@ a genome assembly — its marginal genomic information is largely captured. By c
 family Centrophoridae have **no assembly at all**. We note that EDGE2 already conditions a
 species' score on its relatives' extinction risk, so SeqDef extends the same conditioning logic
 to genomic-data availability, and — unlike static EDGE — is **dynamic**, updating as relatives
-are sequenced (Supplementary Fig. S4; divergence table in the supplement).
+are sequenced (Supplementary Fig. S3; divergence table in the supplement).
 
 ### 1.4 Claims about computational efficiency
 > *Efficiency is asserted twice with no evidence; provide complexity analysis and/or empirical
@@ -156,12 +151,12 @@ are sequenced (Supplementary Fig. S4; divergence table in the supplement).
   dense result (≤ 1e-16) yet runs a single call at n = 100,000 in **0.06 s using 74 MB** (vs 808 s /
   447 GB dense) and at **n = 1,000,000 in < 1 s using ~0.4 GB**, on a laptop. The default kernel
   therefore scales *exactly* to whole-tree-of-life size, superseding the sparse-kernel approximation
-  we had flagged as future work (Supplementary Fig. S6 now contrasts the two regimes).
+  we had flagged as future work (Supplementary Fig. S4 now contrasts the two regimes).
 - **Real data.** The 877-tip Chondrichthyes tree runs in **0.02 s** (single λ) / **0.21 s**
   (`auto_max`); the full 100-tree posterior with `auto_max` completes in ≈ **40 s**.
 - We therefore state that SeqDef with the **default exponential kernel scales exactly to whole-tree-
   of-life size in O(n)**, while the Gaussian/linear kernels are O(n²) and efficient at clade-to-class
-  scale (Supplementary Fig. S6). For those dense kernels, a truncated/sparse approximation remains a
+  scale (Supplementary Fig. S4). For those dense kernels, a truncated/sparse approximation remains a
   natural route to the very largest trees (future work).
 
 ### 1.5 Typographical problems in the mathematical notation
@@ -208,9 +203,8 @@ a planned `prune = FALSE` option so users can supply an augmented tree directly.
 
 ### 2.3 Definition of S and examples beyond 0/1
 **Response.** Addressed together with Reviewer 1's 1.1: S is a general score on [0,1]; we give
-worked continuous constructions in the Methods and added the supplementary continuous-S analysis
-(ρ = 0.98 vs binary; top target unchanged). The binary coding is retained for the main case study
-with its rationale stated.
+worked continuous constructions in the Methods (data-type breadth and quality gradients). The binary
+coding is retained for the main case study with its rationale stated.
 
 ### 2.4 Incorporating a taxonomic-uncertainty weight
 **Response.** We note that a taxonomic-uncertainty weight slots naturally into the framework either

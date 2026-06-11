@@ -1,5 +1,5 @@
 # =============================================================================
-# 03_edge_benchmark.R
+# figS2_edge_benchmark.R
 # Reviewer 1 #3 / Editor M3:  Benchmark SeqDef-Priority against EDGE (and EDGE2).
 #
 # Frame: COMPLEMENTARITY. EDGE ignores existing genomic data; SeqDef conditions
@@ -12,7 +12,7 @@
 # Produces:
 #   results/edge_benchmark.csv
 #   results/edge_divergence.csv
-#   figures/figS_edge_vs_seqdef.pdf
+#   figures/figS2_edge_vs_seqdef.pdf
 # =============================================================================
 
 source("analyses/00_setup.R")
@@ -101,28 +101,30 @@ divergence <- bench %>%
   select(species, iucn, ED, rank_EDGE, SeqDef, rank_SeqDef, rank_Priority, gap, genus)
 write.csv(divergence, "results/edge_divergence.csv", row.names = FALSE)
 exemplars <- head(divergence$species, 5)   # clearest cases (largest rank gap)
-# label two well-separated exemplars (one Carcharhinus, one Sphyrna) to avoid overlap
-label_sp  <- c(divergence$species[1], divergence$species[grep("^Sphyrna", divergence$species)[1]])
+# label only Sphyrna lewini (C. borneensis dropped to match the manuscript body and caption;
+# it remains an unlabeled purple "divergent" point)
+label_sp  <- divergence$species[grep("^Sphyrna", divergence$species)[1]]
 cat(sprintf("\n[Divergence] top high-EDGE / low-SeqDef species with a sequenced congener (by rank gap):\n"))
 print(head(divergence, 6))
 
-# ---- Figure: EDGE vs SeqDef (the orthogonality / complementarity is the point)
+# ---- Figure: EDGE vs SeqDef (reworked: rho box + clean labels; text -> caption)
 abbr <- function(s) sapply(strsplit(s, "_"), function(p) paste0(substr(p[1], 1, 1), ". ", p[2]))
+bench$EDGE_s <- scales::rescale(bench$EDGE)
 bench$flag <- ifelse(bench$species == TARGET, "target",
                      ifelse(bench$species %in% exemplars, "divergent", "other"))
-pdat <- bench %>% mutate(EDGE_s = scales::rescale(EDGE))
-lab_tgt <- subset(pdat, species == TARGET)
-lab_div <- subset(pdat, species %in% label_sp); lab_div$lab <- abbr(lab_div$species)
-p <- ggplot(pdat, aes(EDGE_s, SeqDef)) +
-  geom_point(data = subset(pdat, flag == "other"), color = "grey75", size = 0.8, alpha = 0.5) +
-  geom_point(data = subset(pdat, flag == "divergent"), color = "#762a83", size = 2) +
-  geom_point(data = lab_tgt, color = "#D73027", size = 3) +
-  geom_text(data = lab_tgt, label = "C. atromarginatus", color = "#D73027", vjust = -1, hjust = 0.9, size = 3, fontface = "italic") +
-  geom_text(data = lab_div, aes(label = lab), color = "#762a83", vjust = -0.9, size = 2.8, fontface = "italic") +
-  labs(x = "EDGE (scaled)", y = "SeqDef (genomic deficiency)",
-       subtitle = sprintf("EDGE and SeqDef are near-orthogonal (rho = %.2f). Purple: the clearest high-EDGE / low-SeqDef\ncases (a congener is already sequenced); C. atromarginatus (red) is high on both.",
-                          sp_cor(EDGE, seqdef))) +
-  theme_minimal() + theme(panel.grid.minor = element_blank(), plot.subtitle = element_text(size = 9))
-ggsave("figures/figS_edge_vs_seqdef.pdf", p, width = 6.5, height = 5)
+lab_tgt <- subset(bench, species == TARGET)
+lab_div <- subset(bench, species %in% label_sp); lab_div$lab <- abbr(lab_div$species)
+p <- ggplot(bench, aes(EDGE_s, SeqDef)) +
+  geom_point(data = subset(bench, flag == "other"), color = "grey78", size = 0.9, alpha = 0.5) +
+  geom_point(data = subset(bench, flag == "divergent"), color = "#762a83", size = 2) +
+  geom_point(data = lab_tgt, color = "#D73027", size = 3.2) +
+  geom_text(data = lab_tgt, label = "C. atromarginatus", color = "#D73027", vjust = -1.1, hjust = 0.85, size = 3.1, fontface = "italic") +
+  geom_text(data = lab_div, aes(label = lab), color = "#762a83", vjust = -1, size = 2.9, fontface = "italic") +
+  annotate("label", x = 0, y = 1.0, hjust = 0, vjust = 1, parse = TRUE,
+           label = sprintf("rho == %.2f", sp_cor(EDGE, seqdef)), size = 3.4, fill = "white", label.size = 0.3) +
+  scale_y_continuous(expand = expansion(mult = c(0.03, 0.07))) +
+  labs(x = "EDGE (scaled 0 to 1)", y = "SeqDef: genomic deficiency (0 to 1)") +
+  theme_minimal(base_size = 11) + theme(panel.grid.minor = element_blank())
+ggsave("figures/figS2_edge_vs_seqdef.pdf", p, width = 6.5, height = 5)
 
-cat("\n[03] DONE. Wrote results/edge_benchmark.csv, results/edge_divergence.csv, figures/figS_edge_vs_seqdef.pdf\n")
+cat("\n[figS2] DONE. Wrote results/edge_benchmark.csv, results/edge_divergence.csv, figures/figS2_edge_vs_seqdef.pdf\n")

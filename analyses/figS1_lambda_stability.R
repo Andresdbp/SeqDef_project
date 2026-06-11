@@ -1,5 +1,5 @@
 # =============================================================================
-# 01_lambda_stability.R
+# figS1_lambda_stability.R
 # Reviewer 1 #2a / Editor M2a:  Does lambda change the PRIORITIZATION (not just
 # the variance)?  And how do the two lambda-selection methods compare on outcomes?
 #
@@ -7,7 +7,7 @@
 #   results/posterior_priority.rds     (cached per-tree auto_max & by_genus runs)
 #   results/lambda_rank_stability.csv
 #   results/method_comparison.csv
-#   figures/figS_lambda_stability.pdf
+#   figures/figS1_lambda_stability.pdf
 # =============================================================================
 
 source("analyses/00_setup.R")
@@ -139,30 +139,26 @@ if (length(maj_band))
               min(maj_band), max(maj_band)))
 
 # =============================================================================
-# PART D.  Figure
+# PART D.  Figure (Supplementary Fig. S1)
 # =============================================================================
-lam_auto_med <- median(method_cmp$lambda_auto)
-p1 <- ggplot(stab_summary, aes(lambda, rho_pri_mean)) +
-  annotate("rect", xmin = quantile(method_cmp$lambda_auto, .025), xmax = quantile(method_cmp$lambda_auto, .975),
-           ymin = -Inf, ymax = Inf, fill = "#D73027", alpha = 0.15) +
-  geom_vline(xintercept = lam_auto_med, color = "#D73027", linetype = "longdash") +
-  geom_ribbon(aes(ymin = rho_pri_lo, ymax = rho_pri_hi), alpha = 0.2, fill = "#1862C9") +
+lam_med <- median(method_cmp$lambda_auto)
+lam_lo  <- quantile(method_cmp$lambda_auto, .025)
+lam_hi  <- quantile(method_cmp$lambda_auto, .975)
+band <- list(
+  annotate("rect", xmin = lam_lo, xmax = lam_hi, ymin = -Inf, ymax = Inf, fill = "#D73027", alpha = 0.12),
+  geom_vline(xintercept = lam_med, color = "#D73027", linetype = "longdash"))  # auto-selected lambda (explained in caption)
+tagTR <- function(lab) annotate("text", x = Inf, y = Inf, label = lab, hjust = 1.4, vjust = 1.5, fontface = "bold", size = 5)
+p1 <- ggplot(stab_summary, aes(lambda, rho_pri_mean)) + band +
+  geom_ribbon(aes(ymin = rho_pri_lo, ymax = rho_pri_hi), fill = "#1862C9", alpha = 0.2) +
   geom_line(color = "#1862C9", linewidth = 1) +
-  coord_cartesian(ylim = c(min(0.5, min(stab_summary$rho_pri_lo)), 1)) +
-  labs(x = expression(lambda), y = expression("Spearman " * rho * ": fixed-" * lambda * " vs auto_max ranking"),
-       subtitle = "A  Ranking stability across lambda (all 877 species)") +
-  theme_minimal() + theme(panel.grid.minor = element_blank())
+  coord_cartesian(ylim = c(0.5, 1)) + tagTR("A") +
+  labs(x = expression(lambda), y = expression("Ranking agreement with auto_max (Spearman " * rho * ")")) +
+  theme_minimal(base_size = 11) + theme(panel.grid.minor = element_blank())
+p2 <- ggplot(stab_summary, aes(lambda, top10_pri_mean)) + band +
+  geom_point(color = "#C96E18", size = 1.7) +
+  scale_y_continuous(breaks = 0:10, minor_breaks = NULL, limits = c(0, 10)) + tagTR("B") +
+  labs(x = expression(lambda), y = "Top-10 overlap with auto_max (of 10)") +
+  theme_minimal(base_size = 11) + theme(panel.grid.minor = element_blank())
+ggsave("figures/figS1_lambda_stability.pdf", patchwork::wrap_plots(p1, p2, nrow = 1), width = 10, height = 4)
 
-p2 <- ggplot(stab_summary, aes(lambda, top10_pri_mean)) +
-  geom_vline(xintercept = lam_auto_med, color = "#D73027", linetype = "longdash") +
-  geom_line(color = "#C96E18", linewidth = 1) +
-  geom_hline(yintercept = 10, linetype = "dotted") +
-  coord_cartesian(ylim = c(0, 10)) +
-  labs(x = expression(lambda), y = "Top-10 overlap with auto_max",
-       subtitle = "B  Top-10 priority overlap across lambda") +
-  theme_minimal() + theme(panel.grid.minor = element_blank())
-
-ggsave("figures/figS_lambda_stability.pdf", patchwork::wrap_plots(p1, p2, nrow = 1),
-       width = 10, height = 4)
-
-cat("\n[01] DONE. Wrote results/{posterior_priority.rds, method_comparison.csv, lambda_rank_stability.csv}, figures/figS_lambda_stability.pdf\n")
+cat("\n[figS1] DONE. Wrote results/{posterior_priority.rds, method_comparison.csv, lambda_rank_stability.csv}, figures/figS1_lambda_stability.pdf\n")

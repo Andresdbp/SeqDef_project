@@ -1,127 +1,132 @@
-# SeqDef — analyses to run for the JEB major revision
+# SeqDef — revision analysis pipeline
 
-**For:** Claude Code, working in this repo (`SeqDef_project/`) and the sibling package repo (`SeqDef/`).
-**Goal:** Produce the empirical results that the reviewer/editor comments require but that cannot be written as text until run. The pure-text manuscript edits are handled separately (see `revision/SeqDef_revision_strategy.docx` and the chat handoff). Do **not** rewrite the manuscript here — just generate analyses, figures, and a numbers summary.
+**Repo:** `SeqDef_project/` (analysis + manuscript repo) and the sibling package repo `SeqDef/`.
+**Manuscript:** *SeqDef: An R package for phylogenetically weighted genomic prioritization across the tree of life* — JEB-2026-00140 (Major Revision, now final pre-submission).
 
-Manuscript: *SeqDef: An R package for phylogenetically weighted genomic prioritization across the tree of life* — JEB-2026-00140, Major Revision. See `context.md` for repo orientation.
+This file documents the analysis pipeline that backs the revised manuscript: one entry per current script, what each does, which reviewer/editor concern it resolves, its inputs and outputs, and how to run it. The pure-text manuscript edits are tracked separately (`revision/`). See `context.md` for repo orientation.
 
----
+The supplementary materials are **three figures and no tables**:
 
-## 0. Ground rules
+| Figure | File | What it shows |
+| --- | --- | --- |
+| Fig S1 | `figures/figS1_lambda_stability.pdf` | Priority-ranking stability across λ (100 posterior trees) |
+| Fig S2 | `figures/figS2_edge_vs_seqdef.pdf` | SeqDef-vs-EDGE orthogonality on the MCC tree (n = 877) |
+| Fig S3 | `figures/figS3_runtime.pdf` | Computational cost across the four kernels (runtime + memory) |
 
-- **Reproducibility:** set `set.seed(42)` anywhere randomness is used (`rtree`, sampling, simulated S). Record `sessionInfo()` and hardware (`Sys.info()`, `parallel::detectCores()`, RAM) into `results/SESSION.txt`.
-- **Outputs:** create `results/` (CSV + cached `.rds`) and write figures to `figures/`. Cache expensive intermediates (100-tree × λ-grid loops) as `.rds` so reruns are fast.
-- **One script per analysis** in a new `analyses/` folder, plus `analyses/run_all.R`. Name them `01_…`.R through `06_…`.R as below.
-- **Do NOT commit credentials.** `analysis.R` currently contains real-looking NCBI Entrez and IUCN keys (also in git history). Do not echo them, do not re-commit them. If an analysis needs to re-query NCBI/IUCN, read keys from `Sys.getenv()` only.
-- **Path gotcha:** `analysis.R` reads `data/raw/iucn_assessment_data.rds` and `data/raw/ncbi_assembly_data.rds`, but those files actually live in `data/` (no `raw/` subfolder); `chondrichthyes.nex` is in `data/`. Reconcile before running (either move the two `.rds` into `data/raw/` or fix the paths). Confirm all three load.
-- **Backward compatibility:** the default behaviour of `SeqDef()` must not change. The only signature change is an additive `kernel=` argument defaulting to `"exponential"` (Analysis 2).
-- **End product:** `results/SUMMARY.md` containing the headline numbers, written to slot directly into the bracketed placeholders in `revision/SeqDef_response_to_reviewers.docx` (placeholder tags noted per analysis below).
-
-## Repo assets you already have
-
-- `function.R` — local copy of `SeqDef()` and `calc_priority()`.
-- `SeqDef/R/SeqDef.R`, `SeqDef/R/calc_priority.R` — the package source (+ `man/`, `NAMESPACE`).
-- `analysis.R` — Chondrichthyes pipeline (IUCN + NCBI + 100 posterior trees → SeqDef → `calc_priority` → Fig 4). Commented toy-tree block at the bottom is the basis for Fig 1.
-- `validation.R` — already computes variance-vs-λ curves (Fig 2A/B), the λ distributions for both selection methods, and the topological-robustness test (Fig 3). **Extend this; don't duplicate it.**
-- `data/chondrichthyes.nex` — 100 posterior trees (VertLife/Stein et al. 2018).
-- `data/iucn_assessment_data.rds`, `data/ncbi_assembly_data.rds` — IUCN categories and NCBI assembly presence/absence (binary `assembly_availability`).
-- `seqdef.csv` — toy 10-taxon availability vector (taxa1–10, last = 1).
-
-Key `SeqDef()` internals to know: the kernel is hard-coded at `dist.prop <- exp(-final_lambda * dist.matrix / td)`; `lambda="auto_max"` scans `seq(1,50,0.1)` maximizing variance (10% drop tolerance) and its internal `calc_var()` helper **also** hard-codes the exponential kernel; `lambda="by_genus"` sets λ = log(2)/median intra-genus normalized distance. `calc_priority()` computes `s_scores * (base ^ trait)`, i.e. SeqDef × 2^GE with GE = {LC0, NT1, VU2, EN3, CR4}.
+The former Supplementary Tables (kernel agreement; Brownian comparison) were removed; those values are now reported **inline in the manuscript text**. The two scripts that produce them (`kernel_comparison.R`, `brownian_comparison.R`) write CSVs and print the in-text numbers, but no longer emit a figure or table.
 
 ---
 
-## Analysis 1 — λ sensitivity on *rankings* + head-to-head of the two λ methods
-**Resolves:** Reviewer 1 #2 (first half), Editor major #2a. **Placeholders:** response §1.2.
+## Ground rules
 
-`validation.R` already shows variance vs λ and the λ distributions. What's missing is the reviewer's actual question — *does λ change the prioritization, not just the variance?* Add:
+- **Reproducibility:** `set.seed(42)` is set in `00_setup.R` and in every script that draws random trees or samples. Hardware and `sessionInfo()` are written to `results/SESSION.txt` by the `write_session()` helper in `00_setup.R`.
+- **No network, no credentials.** The pipeline never sources `analysis.R` (which historically held API keys). `00_setup.R` loads the cached data directly from `data/*.rds` and `data/chondrichthyes.nex`. There are no NCBI/IUCN calls in the analysis pipeline.
+- **One script per output.** Scripts live in `analyses/` and are named to match the figure or value they produce. Heavy intermediates (the 100-tree × λ-grid loops, the MCC tree) cache to `results/*.rds`; delete those to force a clean recompute.
+- **Backward compatibility.** `SeqDef()`'s default behaviour is unchanged. The only additive signature change is `kernel = c("exponential", "gaussian", "linear", "brownian")`, defaulting to `"exponential"`.
 
-1. **Rank stability vs λ.** On the MCC tree (and a sample of ≥20 posterior trees for CIs), compute SeqDef and the final Priority over `lambda = seq(1, 25, 0.5)`. For each λ:
-   - Spearman ρ of the SeqDef ranking and of the Priority ranking vs the `auto_max` solution;
-   - top-10 overlap (count or Jaccard) vs the `auto_max` top-10;
-   - whether the top-1 target is *Centrophorus atromarginatus*.
-   Plot ρ and top-10 overlap against λ (mean + 95% band across trees).
-2. **Method head-to-head.** For each of the 100 posterior trees compute Priority under `auto_max` and under `by_genus`; report Spearman ρ between the two Priority vectors and the fraction of trees whose top target agrees. (Reuse the λ-value distributions already in `validation.R`.)
+### Package surface (`SeqDef()` / `calc_priority()`)
 
-**Outputs:** `results/lambda_rank_stability.csv`, `results/method_comparison.csv`, `figures/figS_lambda_stability.pdf`.
-**Report:** median ρ and range across λ∈[1,25]; the λ band over which top-1 is invariant; auto_max-vs-by_genus ρ and % top-target agreement.
+- **`kernel`** — `"exponential"` (default; exact O(n) tree traversal, tunable horizon) / `"gaussian"` / `"linear"` (both dense O(n²)) / `"brownian"` (O(n), parameter-free, ignores λ; the flat low-λ limit of the exponential).
+- **`lambda`** — `"auto_max"` (scans λ ∈ [1, 50] in 0.1 steps, maximizing SeqDef variance with a 10 % drop tolerance) / `"by_genus"` (λ = log 2 / median intra-genus normalized distance) / a numeric value.
+- **`calc_priority()`** = SeqDef × `base ^ trait`, with `base = 2` and the Global Endangerment weights GE = {LC 0, NT 1, VU 2, EN 3, CR 4}.
 
-## Analysis 2 — Kernel comparison (requires a small package change)
-**Resolves:** Reviewer 1 #2 (second half), Editor major #2b. **Placeholders:** response §1.2 (kernel sentence).
+The kernel is factored into one internal helper used by both the final calculation and the `auto_max` variance loop, mirrored in `SeqDef/R/SeqDef.R` and the local `function.R`. `function.R` also exposes the linear-time traversal helpers `.seqdef_exp_avail()` (exponential) and `.seqdef_bm_avail()` (Brownian) used by the runtime benchmark.
 
-**Code change (mirror in BOTH `SeqDef/R/SeqDef.R` and `function.R`):** factor the kernel into one internal helper and add a `kernel = c("exponential","gaussian","linear")` argument (default `"exponential"`, so existing behaviour is unchanged). The helper must be used in *both* the final calculation and the `auto_max` `calc_var()` loop so optimization matches the chosen kernel. Use normalized distance `x = d / T_depth`:
+### Shared data and setup (`analyses/00_setup.R`)
 
-```r
-kern <- function(x, lambda, kernel) {
-  switch(kernel,
-    exponential = exp(-lambda * x),
-    gaussian    = exp(-lambda * x^2),
-    linear      = pmax(0, 1 - lambda * x)   # clamp at 0
-  )
-}
+Every analysis script begins with `source("analyses/00_setup.R")`. It loads the kernel-enabled `SeqDef()`/`calc_priority()` from `function.R`, reads the cached inputs, builds the IUCN table, and exposes the shared helpers:
+
+- **Inputs:** `data/chondrichthyes.nex` (100 posterior trees, VertLife/Stein et al. 2018), `data/iucn_assessment_data.rds` (IUCN assessments), `data/ncbi_assembly_data.rds` (binary `assembly_availability`).
+- **Derived:** `iucn_clean` (one row per species: name, IUCN category, order), `risk_index` (IUCN → GE weight), and `tree_mcc` — the maximum-clade-credibility tree, cached to `results/mcc_tree.rds`.
+- **Helpers:** `build_input_binary()` (prune a tree to the IUCN intersection and attach binary availability), `ge_for_tree()` (GE vector aligned to a tree's tips), `clean_tree()`, and the `TARGET` constant (`Centrophorus_atromarginatus`, the case-study top target).
+- **Case-study scope:** the phylogeny-∩-IUCN intersection is **n = 877 species**, of which **55 have an NCBI assembly**.
+
+---
+
+## Scripts
+
+### `figS1_lambda_stability.R` — λ rank-stability + the two λ-selection methods
+**Resolves:** Reviewer 1 #2a / Editor major #2a — *does λ change the prioritization, not just the variance?* and how do the two λ-selection methods compare on outcomes.
+
+Runs `auto_max` and `by_genus` on all 100 posterior trees (cached), reproduces the topological-robustness distribution of top-1 winners, compares the two methods head-to-head, and sweeps a fixed-λ grid (λ ∈ [1, 25], step 0.5) on a 20-tree sample to measure ranking agreement against each tree's own `auto_max` solution.
+
+- **Inputs:** `00_setup.R` (posterior trees, IUCN, NCBI).
+- **Outputs:** `results/posterior_priority.rds` (cached per-tree runs), `results/lambda_rank_stability.csv`, `results/method_comparison.csv`, `figures/figS1_lambda_stability.pdf`.
+- **Key results:** across λ ∈ [1, 25], Priority ρ vs `auto_max` = **0.93 median, 0.88 minimum**; *C. atromarginatus* is the top target across the sweep, peaking in the auto-selected band (λ ≈ 2.6–5). The two λ methods select similar values (`auto_max` median **3.40** [2.65, 5.00]; `by_genus` median **3.19** [2.87, 4.87]), their Priority outputs correlate at **ρ = 0.998**, and they agree on the single top target in **all 100/100 trees**.
+
+### `figS2_edge_benchmark.R` — benchmark against EDGE / EDGE2
+**Resolves:** Reviewer 1 #3 / Editor major #3 — position SeqDef relative to existing prioritization metrics. The framing is **complementarity**: EDGE ignores existing genomic data; SeqDef conditions on it.
+
+Everything is computed on the MCC tree so ED, EDGE, EDGE2 and SeqDef share one topology. Computes Evolutionary Distinctiveness (`picante::evol.distinct`, fair-proportion and equal-splits), classic EDGE = log(1 + ED) + GE·log 2, and EDGE2 (expected-PD-loss formulation using the standard IUCN 50-yr extinction-probability map: LC 0.0009, NT 0.0071, VU 0.0513, EN 0.4276, CR 0.9688). It then correlates each against SeqDef-Priority, computes top-25 overlap, and isolates the divergence cases — high-EDGE / low-SeqDef species whose congener is already sequenced.
+
+- **Inputs:** `00_setup.R` (MCC tree, IUCN, NCBI assembly presence/absence); `picante`.
+- **Outputs:** `results/edge_benchmark.csv` (per species: ED, EDGE, EDGE2, SeqDef, Priority + each rank), `results/edge_divergence.csv`, `figures/figS2_edge_vs_seqdef.pdf`.
+- **Key results:** ρ(EDGE, SeqDef) = **0.07** (near-orthogonal); ρ(EDGE, Priority) = **0.83**, ρ(EDGE2, Priority) = **0.79** (the shared IUCN threat term); top-25 overlap **9** (EDGE) and **8** (EDGE2). Worked divergence: *Sphyrna lewini* (CR) ranks EDGE 40 but SeqDef **779/877** because congener *S. mokarran* already has a genome (low marginal genomic gain); *C. atromarginatus* ranks high on both (Centrophoridae has no genome).
+
+### `figS3_runtime.R` — computational cost across the four kernels
+**Resolves:** Reviewer 1 #4 / Editor major #4 — scalability and the complexity statement.
+
+Benchmarks all four kernels on `ape::rtree(n)` with random binary availability. The exponential and Brownian kernels use the exact O(n) traversal (timed on the laptop to **n = 10⁶**); the Gaussian and linear kernels build the full n × n distance matrix (O(n²), timed on the laptop to the memory limit and on an HPC node at larger n). Plots runtime and peak memory vs n on log-log axes with O(n) and O(n²) reference lines; the large-n O(n²) points are read back from the separately produced Grace CSV.
+
+- **Inputs:** `function.R` (traversal helpers); `results/dense_kernel_grace.csv` (HPC points; produced by `grace_dense_kernels.R`, see below).
+- **Outputs:** `results/traversal_benchmark.csv` (exponential + brownian, O(n)), `results/dense_kernel_benchmark.csv` (gaussian + linear, O(n²), laptop), `figures/figS3_runtime.pdf`.
+- **Key results:** exponential and Brownian are **O(n)** — n = 10⁶ in **< 1 s using ≈ 0.4 GB** on an Apple M1 Pro laptop (16 GB); the case-study Chondrichthyes run (877 tips) is ~0.02 s at fixed λ / ~0.21 s with `auto_max`, and ~40 s for the full 100-tree posterior. Gaussian and linear scale as **O(n²)** (fitted log-log slopes ≈ 2.2 time / 2.0 memory), reaching **447 GB at n = 10⁵** and **~1 TB (1006 GB) at n = 1.5 × 10⁵** on the HPC node (runtime ≈ 726 s at n = 10⁵).
+
+### `kernel_comparison.R` — kernel-agreement values (reported in text)
+**Resolves:** Reviewer 1 #2b / Editor major #2b — justify defaulting to the exponential kernel by showing rankings are robust to the kernel choice.
+
+Runs all four kernels (each with its own `auto_max` λ where applicable) on the MCC tree and all 100 posterior trees, then reports cross-kernel Priority correlations and whether the top target is preserved. **Produces a CSV only; the values are reported inline in the manuscript** (this replaced the former Supplementary Table S1).
+
+- **Inputs:** `00_setup.R` (MCC + 100 posterior trees, IUCN, NCBI).
+- **Outputs:** `results/kernel_comparison.csv`.
+- **Key results (vs exponential, across the 100 posterior trees):** Priority ρ = **gaussian 0.88, linear 0.94, brownian 0.78**. *C. atromarginatus* recovered as the top target (of 100 trees) = exponential 85, gaussian 83, linear 87, **brownian 23**. Median `auto_max` λ = exponential 3.40, gaussian 1.80, linear 1.30 (Brownian is parameter-free).
+
+### `brownian_comparison.R` — Brownian-kernel values (reported in text)
+**Resolves:** Reviewer comments on alternative kernels — demonstrate empirically that the Brownian-motion kernel is the flat, low-discrimination limit of the exponential.
+
+Compares the Brownian kernel against the exponential on the MCC tree: variance-vs-λ curve, agreement at small λ, and the Priority re-ranking. **Produces a CSV only; the values are reported inline in the manuscript** (this replaced the former Supplementary Table S2).
+
+- **Inputs:** `00_setup.R` (MCC tree, IUCN).
+- **Outputs:** `results/brownian_comparison.csv`.
+- **Key results:** Brownian ≈ the flat low-λ limit of the exponential (ρ ≈ 0.98 vs exponential at λ ≈ 0.5). SeqDef variance 0.038 (Brownian) vs 0.045 at the variance-maximizing λ. The Brownian kernel re-ranks taxa (Priority ρ = 0.78 vs exponential), recovers the top target in only **23/100 trees**, and favours the deep-diverging chimaera *Callorhinchus*.
+
+### `grace_dense_kernels.R` + `grace_dense_kernels.slurm` — HPC dense O(n²) benchmark
+**Feeds:** Fig S3 (the large-n Gaussian/linear points).
+
+The Gaussian and linear kernels build the full n × n distance matrix, so peak memory ~6·n²·8 bytes pushes past laptop RAM. This compute-only job runs them on a large-memory node and writes the CSV that `figS3_runtime.R` reads back. It runs single-threaded (BLAS threads pinned to 1) for a clean O(n²) scaling curve, over n ∈ {25 000, 50 000, 100 000, 150 000}.
+
+- **Where:** a TAMU Grace bigmem node (3 TB, 80 cores, R 4.4.2). The SLURM script requests the `bigmem` partition with `--mem=1500G`; `function.R` must be present alongside the script in the run directory.
+- **Inputs:** `function.R` (the kernel-enabled `SeqDef()`).
+- **Output:** `results/dense_kernel_grace.csv` (n, time_s, peak_mb, kernel for gaussian + linear).
+- **Run:** `sbatch grace_dense_kernels.slurm` (adjust the `cd` path and `R_LIBS_USER` to your scratch layout).
+
+---
+
+## How to run
+
+From the project root (`SeqDef_project/`):
+
+```sh
+Rscript analyses/run_all.R
 ```
 
-Update roxygen for the new arg and re-run `devtools::document()`; add it to `man/SeqDef.Rd`.
+`run_all.R` sources, in order: `figS1_lambda_stability.R`, `figS2_edge_benchmark.R`, `figS3_runtime.R`, `kernel_comparison.R`, `brownian_comparison.R`. It never sources `analysis.R` and loads cached data directly. Heavy steps cache to `results/*.rds`; delete those to force a clean recompute.
 
-**Analysis:** on the Chondrichthyes data (MCC + a posterior sample), compute SeqDef and Priority under each kernel (each with its own `auto_max` λ). Report Spearman ρ of rankings across kernels and whether the top target is preserved.
-
-**Outputs:** `results/kernel_comparison.csv`, `figures/figS_kernel.pdf`.
-**Report:** cross-kernel rank correlations; top-1 preserved (yes/no per kernel).
-
-## Analysis 3 — Benchmark vs EDGE / EDGE2
-**Resolves:** Reviewer 1 #3, Editor major #3. **Placeholders:** response §1.3.
-
-Use the MCC tree + the IUCN table.
-
-1. **ED:** `picante::evol.distinct(tree, type = "fair.proportion")` (also do `"equal.splits"` as a check), or `caper`.
-2. **Classic EDGE (Isaac et al. 2007):** `EDGE = log(1 + ED) + GE * log(2)`, with `GE = {LC0, NT1, VU2, EN3, CR4}`.
-3. **EDGE2 (Gumbs et al. 2023) — preferred, optional if impractical:** implement per the published protocol (ED2 accounts for relatives' extinction probabilities; score combines ED2 with the species' extinction probability). Use an IUCN→pₑₓₜ mapping and **cite the source you use**; a standard 50-year set is `LC=0.0009, NT=0.0071, VU=0.0513, EN=0.4276, CR=0.9688`. If a full EDGE2 implementation isn't feasible in time, do classic EDGE (required) and note EDGE2 as future work.
-4. **Compare** EDGE / EDGE2 against SeqDef-Priority: Spearman ρ, overlap of the top-25 lists, and a scatter (EDGE vs Priority) with the top target highlighted.
-5. **The key result — explained divergence.** Find ≥1 species that is high-EDGE but low-SeqDef *because a close relative is already sequenced* (verify against `ncbi_assembly_data.rds`), and confirm *C. atromarginatus* ranks high on both (Centrophoridae has no genome). This pair is the evidence of complementarity.
-
-**Outputs:** `results/edge_benchmark.csv` (per species: ED, EDGE, EDGE2, SeqDef, Priority, and each rank), `figures/figS_edge_vs_seqdef.pdf`, plus a small divergence table.
-**Report:** ρ(EDGE, Priority), ρ(EDGE2, Priority); top-25 overlap; the worked divergence example(s).
-
-## Analysis 4 — Runtime + memory benchmark and complexity statement
-**Resolves:** Reviewer 1 #4, Editor major #4. **Placeholders:** response §1.4.
-
-- Benchmark `SeqDef()` on `ape::rtree(n)` with random binary S for `n ∈ {100, 250, 500, 1000, 2500, 5000, 10000}`, ≥3 reps, median reported. Time **single-λ** (e.g. `lambda = 10`) and **`auto_max`** separately. Capture peak memory (`bench::mark()` gives `mem_alloc`, or `peakRAM`/`gc()`).
-- Time the **real Chondrichthyes run**: 850 tips × 100 trees × `auto_max` (wall-clock).
-- Plot runtime vs n on log-log; fit the slope (expect ≈ 2, confirming ~O(n²)).
-- Record hardware + R version in `results/SESSION.txt`.
-
-**Outputs:** `results/runtime_benchmark.csv`, `figures/figS_runtime.pdf`.
-**Report:** runtime/memory table; log-log slope; Chondrichthyes wall-clock; one line confirming the O(n²)-memory ceiling (≈7 GB at n≈30k).
-
-## Analysis 5 — Regenerate Figure 1 with λ annotated
-**Resolves:** Reviewer 2 (Fig 1), Editor seconded. **Placeholders:** response §2.6.
-
-The current Fig 1 toy panel uses **hand-set** SeqDef values (commented block in `analysis.R`), so there is no real λ to report. Rebuild it from an actual `SeqDef()` run on the 10-taxon toy tree (`seqdef.csv` / the `tree_text` in `analysis.R`), and annotate the λ used. Show **2–3 panels** at different λ (e.g. a small λ, the `auto_max` λ, and a large λ) so readers see the "phylogenetic horizon" effect the reviewer asked about. Keep the existing visual style.
-
-**Output:** overwrite `figures/fig1.pdf`; note the λ value(s) for the caption in `results/SUMMARY.md`.
-
-## Analysis 6 — Continuous-S worked example (supplementary)
-**Resolves:** Reviewer 1 #1 / Reviewer 2 (S examples). **Placeholders:** response §1.1.
-
-Demonstrate that a continuous S behaves sensibly. `ncbi_assembly_data.rds` currently holds only binary `assembly_availability`, so either:
-- **(preferred)** re-query NCBI for assembly *level* and/or contig N50 and map to [0,1] (e.g. Complete=1.0, Chromosome=0.9, Scaffold=0.6, Contig=0.4; needs `ENTREZ_KEY` via env var), or
-- **(fallback)** construct an illustrative continuous S from a plausible quality proxy and label it clearly as illustrative.
-
-Run SeqDef with continuous S on the Chondrichthyes data and compare to the binary-S ranking (Spearman ρ; show the high-priority region is preserved while scores redistribute among low-quality assemblies).
-
-**Outputs:** `results/continuous_S_example.csv`, `figures/figS_continuousS.pdf`.
-**Report:** ρ(continuous, binary) ranking; one or two species whose priority shifts and why.
+The HPC dense-kernel points in Fig S3 are produced **separately** on a large-memory node (`grace_dense_kernels.R` via `grace_dense_kernels.slurm`) and read back from `results/dense_kernel_grace.csv`. `figS3_runtime.R` expects that CSV to be present; if it is missing, re-run the Grace job (or restore the committed CSV) before running the runtime script.
 
 ---
 
-## Deliverables checklist
+## Outputs at a glance
 
-- [ ] `analyses/01…06_*.R` + `analyses/run_all.R`
-- [ ] `kernel=` argument added to `SeqDef()` in **both** `SeqDef/R/SeqDef.R` and `function.R`; roxygen + `man/` updated; `devtools::document()` run
-- [ ] `results/` CSVs + cached `.rds`; `figures/` updated (fig1 regenerated; new figS_* added)
-- [ ] `results/SESSION.txt` (hardware + sessionInfo)
-- [ ] `results/SUMMARY.md` — every headline number, tagged to the response-doc placeholders (§1.1, §1.2, §1.3, §1.4, §2.6)
-- [ ] Confirm no API keys are printed or committed; data paths reconciled
+**Figures** (`figures/`): `figS1_lambda_stability.pdf`, `figS2_edge_vs_seqdef.pdf`, `figS3_runtime.pdf`. Manuscript Figures 1–4 (`fig1.pdf`–`fig4.pdf`) are produced elsewhere; `figures/png/` holds 300-DPI PNGs of all seven figures. **Note:** `fig1.pdf` is the original *illustrative* toy panel (caption: "Values shown are illustrative") — it is not regenerated by this pipeline.
+
+**Results CSVs** (`results/`): `lambda_rank_stability.csv`, `method_comparison.csv`, `edge_benchmark.csv`, `edge_divergence.csv`, `traversal_benchmark.csv`, `dense_kernel_benchmark.csv`, `dense_kernel_grace.csv`, `kernel_comparison.csv`, `brownian_comparison.csv`. Plus `SESSION.txt` (hardware + `sessionInfo()`), `SUMMARY.md` (headline numbers), and cached `.rds` (`mcc_tree.rds`, `posterior_priority.rds`).
+
+## Environment
+
+- **Laptop:** Apple M1 Pro, 16 GB RAM, R 4.5.2 (all O(n) benchmarks and the figure builds).
+- **HPC:** TAMU Grace bigmem node, 3 TB RAM, 80 cores, single-threaded, R 4.4.2 (the O(n²) dense-kernel benchmark only).
 
 ## Out of scope here
-Manuscript prose edits, the notation/equation fixes, Data Availability Statement, CRediT, key rotation, and unit tests are tracked elsewhere (`context.md` "Still to do"). This file is analyses only.
+
+This file documents analyses only. Manuscript prose, the Data Availability Statement, CRediT contributions, a minted Zenodo DOI, and rotation of the API keys still present in git history are author-action items tracked elsewhere (`context.md`, `revision/`).

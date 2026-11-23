@@ -7,7 +7,7 @@
 #   results/posterior_priority.rds     (cached per-tree auto_max & by_genus runs)
 #   results/lambda_rank_stability.csv
 #   results/method_comparison.csv
-#   figures/figS1_lambda_stability.pdf
+#   (Fig. S1 itself is now drawn by stability_seqdef_vs_priority.R)
 # =============================================================================
 
 source("analyses/00_setup.R")
@@ -83,10 +83,11 @@ cat(sprintf("  methods agree on top set : %d/%d\n", sum(method_cmp$agree_top), n
 
 # =============================================================================
 # PART C.  Lambda rank-stability:  fix lambda on a grid and compare the
-#          resulting rankings against each tree's own auto_max solution.
+#          resulting rankings against each tree's own auto_max solution
+#          (all 100 trees; superseded for reporting by stability_seqdef_vs_priority.R).
 # =============================================================================
 set.seed(42)
-samp_ids <- sort(sample(seq_along(posterior), min(20, length(posterior))))
+samp_ids <- seq_along(posterior)   # R2: all 100 posterior trees (R1 used a 20-tree sample)
 lambda_grid <- seq(1, 25, 0.5)
 
 overlap_k <- function(a, b, k = 10) {
@@ -139,26 +140,10 @@ if (length(maj_band))
               min(maj_band), max(maj_band)))
 
 # =============================================================================
-# PART D.  Figure (Supplementary Fig. S1)
+# PART D.  (R2) The Supplementary Fig. S1 drawing moved to
+#          analyses/stability_seqdef_vs_priority.R, which uses all 100 trees
+#          (this script's Part C uses a 20-tree sample), reports SeqDef alone as
+#          well as Priority, and handles ties.  Parts A-C are kept because they
+#          build the posterior cache and the method head-to-head used elsewhere.
 # =============================================================================
-lam_med <- median(method_cmp$lambda_auto)
-lam_lo  <- quantile(method_cmp$lambda_auto, .025)
-lam_hi  <- quantile(method_cmp$lambda_auto, .975)
-band <- list(
-  annotate("rect", xmin = lam_lo, xmax = lam_hi, ymin = -Inf, ymax = Inf, fill = "#D73027", alpha = 0.12),
-  geom_vline(xintercept = lam_med, color = "#D73027", linetype = "longdash"))  # auto-selected lambda (explained in caption)
-tagTR <- function(lab) annotate("text", x = Inf, y = Inf, label = lab, hjust = 1.4, vjust = 1.5, fontface = "bold", size = 5)
-p1 <- ggplot(stab_summary, aes(lambda, rho_pri_mean)) + band +
-  geom_ribbon(aes(ymin = rho_pri_lo, ymax = rho_pri_hi), fill = "#1862C9", alpha = 0.2) +
-  geom_line(color = "#1862C9", linewidth = 1) +
-  coord_cartesian(ylim = c(0.5, 1)) + tagTR("A") +
-  labs(x = expression(lambda), y = expression("Ranking agreement with auto_max (Spearman " * rho * ")")) +
-  theme_minimal(base_size = 11) + theme(panel.grid.minor = element_blank())
-p2 <- ggplot(stab_summary, aes(lambda, top10_pri_mean)) + band +
-  geom_point(color = "#C96E18", size = 1.7) +
-  scale_y_continuous(breaks = 0:10, minor_breaks = NULL, limits = c(0, 10)) + tagTR("B") +
-  labs(x = expression(lambda), y = "Top-10 overlap with auto_max (of 10)") +
-  theme_minimal(base_size = 11) + theme(panel.grid.minor = element_blank())
-ggsave("figures/figS1_lambda_stability.pdf", patchwork::wrap_plots(p1, p2, nrow = 1), width = 10, height = 4)
-
-cat("\n[figS1] DONE. Wrote results/{posterior_priority.rds, method_comparison.csv, lambda_rank_stability.csv}, figures/figS1_lambda_stability.pdf\n")
+cat("\n[figS1] DONE. Wrote results/{posterior_priority.rds, method_comparison.csv, lambda_rank_stability.csv}, (figure: see stability_seqdef_vs_priority.R)\n")

@@ -1,5 +1,11 @@
 # SeqDef revision — headline numbers (JEB-2026-00140)
 
+> **R2 update (2026-11-23).** This file describes the R1 analyses. For the second revision every
+> analysis was re-run on all 100 posterior trees with the package v0.2.0 code (`function.R`); the
+> current numbers are in `context.md` ("Key R2 results"), the per-script logs in `results/logs/`, and
+> the reviewer-by-reviewer mapping in `revision/R2_response_to_reviewers.md`. Where a number below
+> differs from those, the R2 value is the current one.
+
 Reproduced with `set.seed(42)`. The O(n) benchmarks and all figure builds ran on an Apple M1 Pro
 laptop (16 GB, R 4.5.2); the dense O(n²) kernel benchmark ran on a TAMU Grace bigmem node
 (3 TB, 80 cores, single-threaded, R 4.4.2). Every number below is produced by a script in

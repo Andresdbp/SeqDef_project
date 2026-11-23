@@ -103,9 +103,26 @@ write.csv(divergence, "results/edge_divergence.csv", row.names = FALSE)
 exemplars <- head(divergence$species, 5)   # clearest cases (largest rank gap)
 # label only Sphyrna lewini (C. borneensis dropped to match the manuscript body and caption;
 # it remains an unlabeled purple "divergent" point)
-label_sp  <- divergence$species[grep("^Sphyrna", divergence$species)[1]]
+# R2: label EVERY highlighted (purple) point; R1 labelled only S. lewini
+label_sp  <- exemplars
 cat(sprintf("\n[Divergence] top high-EDGE / low-SeqDef species with a sequenced congener (by rank gap):\n"))
 print(head(divergence, 6))
+
+# ---- R2 (Reviewer 2, Major 2): like-for-like comparisons -------------------
+# threat-free vs threat-free (ED vs SeqDef) and threat-weighted vs
+# threat-weighted (EDGE vs Priority).
+bench$rank_ED <- rnk(bench$ED)
+cat(sprintf("\n[Like-for-like] rho(ED, SeqDef) = %.3f | rho(EDGE, Priority) = %.3f\n", sp_cor(bench$ED, bench$SeqDef), sp_cor(bench$EDGE, bench$Priority)))
+print(bench %>% filter(species %in% exemplars) %>%
+        select(species, iucn, rank_ED, rank_SeqDef, rank_EDGE, rank_Priority))
+cat("\nLargest EDGE -> Priority demotions among EDGE top-100 (threat-weighted, like for like):\n")
+print(bench %>% filter(rank_EDGE <= 100) %>% mutate(demotion = rank_Priority - rank_EDGE) %>%
+        arrange(desc(demotion)) %>% select(species, iucn, has_assembly, rank_EDGE, rank_Priority, demotion) %>% head(10))
+cat("\nLargest Priority promotions relative to EDGE among Priority top-100:\n")
+print(bench %>% filter(rank_Priority <= 100) %>% mutate(promotion = rank_EDGE - rank_Priority) %>%
+        arrange(desc(promotion)) %>% select(species, iucn, rank_EDGE, rank_Priority, promotion) %>% head(10))
+write.csv(bench %>% select(species, iucn, has_assembly, rank_ED, rank_SeqDef, rank_EDGE, rank_EDGE2, rank_Priority),
+          "results/edge_like_for_like.csv", row.names = FALSE)
 
 # ---- Figure: EDGE vs SeqDef (reworked: rho box + clean labels; text -> caption)
 abbr <- function(s) sapply(strsplit(s, "_"), function(p) paste0(substr(p[1], 1, 1), ". ", p[2]))
@@ -119,7 +136,9 @@ p <- ggplot(bench, aes(EDGE_s, SeqDef)) +
   geom_point(data = subset(bench, flag == "divergent"), color = "#762a83", size = 2) +
   geom_point(data = lab_tgt, color = "#D73027", size = 3.2) +
   geom_text(data = lab_tgt, label = "C. atromarginatus", color = "#D73027", vjust = -1.1, hjust = 0.85, size = 3.1, fontface = "italic") +
-  geom_text(data = lab_div, aes(label = lab), color = "#762a83", vjust = -1, size = 2.9, fontface = "italic") +
+  (if (requireNamespace("ggrepel", quietly = TRUE))
+     ggrepel::geom_text_repel(data = lab_div, aes(label = lab), color = "#762a83", size = 2.9, fontface = "italic", min.segment.length = 0, seed = 42)
+   else geom_text(data = lab_div, aes(label = lab), color = "#762a83", vjust = -1, size = 2.9, fontface = "italic")) +
   annotate("label", x = 0, y = 1.0, hjust = 0, vjust = 1, parse = TRUE,
            label = sprintf("rho == %.2f", sp_cor(EDGE, seqdef)), size = 3.4, fill = "white", label.size = 0.3) +
   scale_y_continuous(expand = expansion(mult = c(0.03, 0.07))) +

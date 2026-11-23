@@ -1,0 +1,10 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+
+[Brownian, 100 trees] max |A_BM - A_linear(0.5)| = 7.32e-07
+  rho(BM, exponential lambda=0.5) SeqDef: 0.995 [0.978, 0.998]
+  SeqDef variance: BM 0.0388 [0.0371, 0.0400] vs exponential auto_max 0.0448 [0.0405, 0.0491]
+  rho vs exponential auto_max: SeqDef 0.834 [0.598, 0.896] | Priority 0.782 [0.691, 0.837]
+  C. atromarginatus unique top-1 under BM: 23 / 100
+
+Callorhinchus  Centrophorus      Squatina 
+           69            23             8 

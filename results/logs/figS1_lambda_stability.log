@@ -1,0 +1,33 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+PART A: running auto_max + by_genus on 100 posterior trees...
+ ■■■■■■■■■■■                       32% |  ETA:  3s
+
+[Robustness] trees analysed: 100 | Centrophorus_atromarginatus is top in 85 trees
+# A tibble: 6 × 2
+  sp                              n
+  <chr>                       <int>
+1 Centrophorus_atromarginatus    85
+2 Rhinobatos_albomaculatus        6
+3 Rhinobatos_jimbaranensis        4
+4 Acroteriobatus_variegatus       2
+5 Rhinobatos_annandalei           2
+6 Rhinobatos_lionotus             2
+
+[Method head-to-head]
+  lambda_auto  median=3.40 [2.65, 5.00]
+  lambda_genus median=3.19 [2.87, 4.87]
+  Spearman rho(auto, genus) priority: median=0.998 [0.985, 1.000]
+  auto_max top-1 == target : 85/100
+  by_genus top-1 == target : 85/100
+  methods agree on top set : 100/100
+PART C: lambda rank-stability over grid [1,25]...
+ ■■■■■■■■■■■                       32% |  ETA:  7s
+ ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  4s
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% |  ETA:  2s
+
+[Lambda rank-stability over [1,25]]
+  rho(priority vs auto_max): median across grid = 0.928 (min 0.879)
+  rho(seqdef   vs auto_max): median across grid = 0.811 (min 0.773)
+  target is top-1 in >=50% of sampled trees for lambda in [1.0, 25.0]
+
+[figS1] DONE. Wrote results/{posterior_priority.rds, method_comparison.csv, lambda_rank_stability.csv}, (figure: see stability_seqdef_vs_priority.R)

@@ -1,0 +1,16 @@
+auto_max lambda on toy tree: 1.2 
+          tip S lambda_1 lambda_3 lambda_10 auto_max
+taxa1   taxa1 0     1.00     1.00      1.00     1.00
+taxa2   taxa2 0     0.97     1.00      1.00     0.97
+taxa3   taxa3 0     0.92     0.99      1.00     0.94
+taxa4   taxa4 0     0.87     0.99      1.00     0.89
+taxa5   taxa5 0     0.81     0.98      1.00     0.84
+taxa6   taxa6 0     0.73     0.95      1.00     0.77
+taxa7   taxa7 0     0.64     0.91      1.00     0.68
+taxa8   taxa8 0     0.52     0.84      1.00     0.56
+taxa9   taxa9 0     0.21     0.45      0.86     0.23
+taxa10 taxa10 1     0.00     0.00      0.00     0.00
+null device 
+          1 
+null device 
+          1 

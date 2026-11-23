@@ -1,36 +1,38 @@
 # =============================================================================
 # brownian_comparison.R
-# Add the Brownian-motion kernel to the comparison and show empirically that it
-# is the flat, low-discrimination limit of the exponential kernel.
-#
-# Produces: results/brownian_comparison.csv  (Brownian comparison; values reported in the manuscript text)
+# The Brownian-motion kernel versus the other kernels, on all 100 posterior
+# trees (R2; R1 used the MCC tree only).
+#   * identity check: on an ultrametric tree the Brownian correlation equals
+#     the linear kernel at lambda = 0.5 (Reviewer 2, Major 3c);
+#   * discrimination: SeqDef variance, Brownian vs exponential at auto_max;
+#   * agreement with the exponential default (SeqDef and Priority) and the
+#     top-ranked species.
+# Produces: results/brownian_comparison.csv (one row per tree) and prints the
+# values quoted in the manuscript.
 # =============================================================================
 source("analyses/00_setup.R")
-inp <- build_input_binary(tree_mcc); tr <- inp$tree; ge <- ge_for_tree(tr)
-
-# Variance of SeqDef vs lambda (exponential) -- fast now via the O(n) traversal
-lam_grid <- seq(0.1, 25, 0.1)
-vv <- sapply(lam_grid, function(l) var(suppressMessages(SeqDef(tr, inp$df, lambda = l, kernel = "exponential"))$seqdef))
-
-res_auto <- suppressMessages(SeqDef(tr, inp$df, lambda = "auto_max", kernel = "exponential"))
-e05 <- suppressMessages(SeqDef(tr, inp$df, lambda = 0.5, kernel = "exponential"))
-bm  <- suppressMessages(SeqDef(tr, inp$df, kernel = "brownian"))
-
-common   <- names(bm$seqdef)
-rho_flat <- cor(bm$seqdef[common], e05$seqdef[common], method = "spearman")
-pri_bm <- calc_priority(bm, ge); pri_ex <- calc_priority(res_auto, ge)
-rho_pri <- cor(pri_bm[common], pri_ex[common], method = "spearman")
-top_bm <- names(sort(pri_bm, decreasing = TRUE))[1]; top_ex <- names(sort(pri_ex, decreasing = TRUE))[1]
-
-cat(sprintf("\n[Brownian] rho(BM, exp lambda=0.5)=%.3f (flat-limit) | var(BM)=%.4f vs var(exp auto_max lambda=%.1f)=%.4f\n",
-            rho_flat, var(bm$seqdef), res_auto$lambda, var(res_auto$seqdef)))
-cat(sprintf("           rho(BM, exp auto_max) priority=%.3f | top: BM=%s, exp=%s\n", rho_pri, top_bm, top_ex))
-
-write.csv(data.frame(
-  metric = c("rho_BM_vs_exp0.5","var_BM","lambda_auto_max","var_exp_auto","rho_BM_vs_exp_auto_priority","top_BM","top_exp_auto"),
-  value  = c(round(rho_flat,4), round(var(bm$seqdef),4), res_auto$lambda, round(var(res_auto$seqdef),4),
-             round(rho_pri,4), top_bm, top_ex)), "results/brownian_comparison.csv", row.names = FALSE)
-
-# --- (Figure removed) --------------------------------------------------------
-# Brownian comparison values are reported inline in the manuscript text (data: results/brownian_comparison.csv).
-cat("[brownian] DONE -> results/brownian_comparison.csv (values reported in the manuscript text).\n")
+posterior <- readRDS("results/posterior_priority.rds")
+TOL <- 1e-6; top_set <- function(x) names(x)[x >= max(x) * (1 - TOL)]
+sp <- function(a, b) cor(a, b, method = "spearman")
+bc <- map_dfr(posterior, function(p) {
+  inp <- build_input_binary(chond[[p$tree_id]]); nm <- inp$tree$tip.label; ge <- ge_for_tree(inp$tree)[nm]
+  bm  <- suppressMessages(SeqDef(inp$tree, inp$df, kernel = "brownian"))
+  l05 <- suppressMessages(SeqDef(inp$tree, inp$df, kernel = "linear", lambda = 0.5))
+  e05 <- suppressMessages(SeqDef(inp$tree, inp$df, kernel = "exponential", lambda = 0.5))
+  sd_exp <- p$seqdef_auto[nm]; pri_exp <- p$pri_auto[nm]; pri_bm <- bm$seqdef[nm] * 2^ge
+  tibble(tree_id = p$tree_id,
+         max_abs_diff_bm_linear05 = max(abs(bm$availability[nm] - l05$availability[nm])),
+         rho_bm_exp05 = sp(bm$seqdef[nm], e05$seqdef[nm]),
+         var_bm = var(bm$seqdef), var_exp_auto = var(sd_exp), lambda_auto = p$lambda_auto,
+         rho_seqdef_bm_exp = sp(bm$seqdef[nm], sd_exp), rho_priority_bm_exp = sp(pri_bm, pri_exp),
+         top1_bm = paste(sort(top_set(pri_bm)), collapse = ";"),
+         target_top1_bm = identical(sort(top_set(pri_bm)), TARGET))
+})
+write.csv(bc, "results/brownian_comparison.csv", row.names = FALSE)
+q <- function(v, d = 3) sprintf(paste0("%.", d, "f [%.", d, "f, %.", d, "f]"), median(v), quantile(v, .025), quantile(v, .975))
+cat(sprintf("\n[Brownian, 100 trees] max |A_BM - A_linear(0.5)| = %.2e\n", max(bc$max_abs_diff_bm_linear05)))
+cat(sprintf("  rho(BM, exponential lambda=0.5) SeqDef: %s\n", q(bc$rho_bm_exp05)))
+cat(sprintf("  SeqDef variance: BM %s vs exponential auto_max %s\n", q(bc$var_bm, 4), q(bc$var_exp_auto, 4)))
+cat(sprintf("  rho vs exponential auto_max: SeqDef %s | Priority %s\n", q(bc$rho_seqdef_bm_exp), q(bc$rho_priority_bm_exp)))
+cat(sprintf("  C. atromarginatus unique top-1 under BM: %d / 100\n", sum(bc$target_top1_bm)))
+print(sort(table(sub("_.*", "", sapply(strsplit(bc$top1_bm, ";"), `[`, 1))), decreasing = TRUE))

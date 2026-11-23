@@ -1,0 +1,101 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+A: SeqDef vs NSD / family-gap on 100 posterior trees ...
+ ■■■■                              11% |  ETA:  9s
+ ■■■■■■■■■■■■■■■                   47% |  ETA:  5s
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% |  ETA:  1s
+
+================ SIMPLE-MEASURES COMPARISON (100 posterior trees) ================
+unsequenced tips: 822 in 178 [168, 189] maximal unsequenced clades
+distinct SeqDef values among unsequenced tips: 200 [183, 213]
+max within-clade SeqDef range (should be ~0): 2.44e-08
+rho(SeqDef, NSD) unsequenced tips  : 0.747 [0.628, 0.825]
+rho(SeqDef, NSD) clade level       : 0.641 [0.517, 0.751]
+rho(SeqDef, family lacks assembly) : 0.427 [0.340, 0.530]
+rho(Priority, NSD x 2^GE)          : 0.778 [0.747, 0.801]
+top-1 Priority tied (>1 species)   : 15/100 trees; total winners counted = 203
+top-1 would be first family assembly: 99% of trees
+top-10/25/50 first-in-family share : 0.90 [0.40, 0.90] / 0.40 [0.36, 0.44] / 0.24 [0.22, 0.24]
+top-25 overlap with NSD-priority   : 12 [11, 18]
+same top-1 as NSD-priority         : 68/100
+unsequenced spp. whose family has an assembly: 0.68 [0.68, 0.68]
+
+[MCC] 172 unsequenced clades; 3531 of 14706 clade pairs (24.0%) are ordered differently by SeqDef and NSD
+# A tibble: 15 × 10
+   clade_A                    fam_A            NSD_A  SD_A nseq_A
+   <chr>                      <chr>            <dbl> <dbl>  <int>
+ 1 Callorhinchus_capensis     Callorhinchidae 0.0239 0.765      1
+ 2 Callorhinchus_callorynchus Callorhinchidae 0.0353 0.779      1
+ 3 Callorhinchus_callorynchus Callorhinchidae 0.0353 0.779      1
+ 4 Callorhinchus_capensis     Callorhinchidae 0.0239 0.765      1
+ 5 Callorhinchus_capensis     Callorhinchidae 0.0239 0.765      1
+ 6 Callorhinchus_capensis     Callorhinchidae 0.0239 0.765      1
+ 7 Callorhinchus_callorynchus Callorhinchidae 0.0353 0.779      1
+ 8 Callorhinchus_capensis     Callorhinchidae 0.0239 0.765      1
+ 9 Callorhinchus_capensis     Callorhinchidae 0.0239 0.765      1
+10 Callorhinchus_callorynchus Callorhinchidae 0.0353 0.779      1
+11 Callorhinchus_callorynchus Callorhinchidae 0.0353 0.779      1
+12 Callorhinchus_callorynchus Callorhinchidae 0.0353 0.779      1
+13 Callorhinchus_callorynchus Callorhinchidae 0.0353 0.779      1
+14 Callorhinchus_capensis     Callorhinchidae 0.0239 0.765      1
+15 Callorhinchus_capensis     Callorhinchidae 0.0239 0.765      1
+   clade_B                   fam_B          NSD_B  SD_B nseq_B
+   <chr>                     <chr>          <dbl> <dbl>  <int>
+ 1 Lamiopsis_temminckii      Carcharhinidae 0.206 0.329      7
+ 2 Lamiopsis_temminckii      Carcharhinidae 0.206 0.329      7
+ 3 Fenestraja_plutonia       Gurgesiellidae 0.301 0.494      7
+ 4 Carcharhinus_signatus     Carcharhinidae 0.182 0.287      7
+ 5 Fenestraja_plutonia       Gurgesiellidae 0.301 0.494      7
+ 6 Carcharhinus_fitzroyensis Carcharhinidae 0.172 0.268      7
+ 7 Loxodon_macrorhinus       Carcharhinidae 0.303 0.505      7
+ 8 Loxodon_macrorhinus       Carcharhinidae 0.303 0.505      7
+ 9 Eusphyra_blochii          Sphyrnidae     0.210 0.375      7
+10 Carcharhinus_signatus     Carcharhinidae 0.182 0.287      7
+11 Eusphyra_blochii          Sphyrnidae     0.210 0.375      7
+12 Carcharhinus_fitzroyensis Carcharhinidae 0.172 0.268      7
+13 Galeocerdo_cuvier         Carcharhinidae 0.324 0.538      7
+14 Galeocerdo_cuvier         Carcharhinidae 0.324 0.538      7
+15 Sphyrna_zygaena           Sphyrnidae     0.193 0.365      7
+
+[MCC] high-SeqDef species in families that DO have an assembly (top 8):
+# A tibble: 8 × 5
+  species              family           SeqDef   NSD iucn 
+  <chr>                <chr>             <dbl> <dbl> <chr>
+1 Neoharriotta_carri   Rhinochimaeridae  1     0.609 NT   
+2 Neoharriotta_pumila  Rhinochimaeridae  1.000 0.609 LC   
+3 Neoharriotta_pinnata Rhinochimaeridae  1.000 0.609 NT   
+4 Narcine_leoparda     Narcinidae        0.945 0.552 VU   
+5 Narcine_brasiliensis Narcinidae        0.945 0.552 NT   
+6 Narcine_brevilabiata Narcinidae        0.945 0.552 VU   
+7 Narcine_lingula      Narcinidae        0.945 0.552 VU   
+8 Narcine_maculata     Narcinidae        0.945 0.552 VU   
+
+[MCC] low-SeqDef species in families with NO assembly (bottom 8):
+# A tibble: 8 × 5
+  species                   family         SeqDef   NSD iucn 
+  <chr>                     <chr>           <dbl> <dbl> <chr>
+1 Gurgesiella_furvescens    Gurgesiellidae  0.449 0.206 LC   
+2 Gurgesiella_atlantica     Gurgesiellidae  0.449 0.206 LC   
+3 Gurgesiella_dorsalifera   Gurgesiellidae  0.449 0.206 VU   
+4 Fenestraja_ishiyamai      Gurgesiellidae  0.494 0.301 LC   
+5 Fenestraja_plutonia       Gurgesiellidae  0.494 0.301 LC   
+6 Fenestraja_sinusmexicanus Gurgesiellidae  0.494 0.301 LC   
+7 Fenestraja_cubensis       Gurgesiellidae  0.494 0.301 LC   
+8 Fenestraja_mamillidens    Gurgesiellidae  0.494 0.301 LC   
+
+families with no assembly: 30 of 63 
+
+[lambda limit] rho(SeqDef(lambda), NSD) among unsequenced tips (100 trees):
+# A tibble: 9 × 4
+  lambda rho_med    lo    hi
+   <dbl>   <dbl> <dbl> <dbl>
+1   0.25   0.420 0.151 0.477
+2   0.5    0.433 0.208 0.492
+3   1      0.463 0.266 0.520
+4   2      0.533 0.368 0.596
+5   3.4    0.748 0.577 0.780
+6   5      0.878 0.763 0.898
+7  10      0.974 0.948 0.980
+8  25      0.995 0.990 0.997
+9  50      0.997 0.993 0.998
+
+[simple measures] DONE.

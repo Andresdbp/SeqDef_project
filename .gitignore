@@ -1,3 +1,6 @@
 # macOS
 .DS_Store
 **/.DS_Store
+
+# IUCN Red List data: the IUCN terms do not allow redistribution (see data/README.md)
+data/iucn_assessment_data.rds

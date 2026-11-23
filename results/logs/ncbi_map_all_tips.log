@@ -1,0 +1,35 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+NCBI species with an assembly by 2025-12-30: 61 
+
+       exact iucn_synonym ncbi_synonym  not_on_tree 
+          52            1            7            1 
+# A tibble: 9 × 5
+  ncbi_species           tip                     match assembly_count best_level
+  <chr>                  <chr>                   <chr>          <int> <chr>     
+1 Hemitrygon akajei      Dasyatis_akajei         ncbi…              1 Chromosome
+2 Hypanus berthalutzae   <NA>                    not_…              1 Scaffold  
+3 Hypanus sabinus        Dasyatis_sabina         ncbi…              2 Chromosome
+4 Leucoraja erinaceus    Leucoraja_erinacea      ncbi…              3 Chromosome
+5 Mobula birostris       Manta_birostris         iucn…              2 Chromosome
+6 Myliobatis californica Myliobatis_californicus ncbi…              1 Scaffold  
+7 Rhina ancylostomus     Rhina_ancylostoma       ncbi…              1 Scaffold  
+8 Stegostoma tigrinum    Stegostoma_fasciatum    ncbi…              3 Chromosome
+9 Tetronarce nobiliana   Torpedo_nobiliana       ncbi…              1 Scaffold  
+
+Original table reproduced (presence/absence) for 876 / 877 species; assembly counts identical for 875
+# A tibble: 2 × 4
+  tip                ncbi_species   count_now count_R1
+  <chr>              <chr>              <int>    <int>
+1 Harriotta_haeckeli <NA>                   0        1
+2 Raja_brachyura     Raja brachyura         1        2
+
+Tips with an assembly that were OUTSIDE the 877 analysed species in R1:
+# A tibble: 6 × 6
+  tip         ncbi_species match assembly_count best_level assembly_availability
+  <chr>       <chr>        <chr>          <int> <chr>                      <int>
+1 Torpedo_no… Tetronarce … ncbi…              1 Scaffold                       1
+2 Rhina_ancy… Rhina ancyl… ncbi…              1 Scaffold                       1
+3 Dasyatis_s… Hypanus sab… ncbi…              2 Chromosome                     1
+4 Dasyatis_a… Hemitrygon … ncbi…              1 Chromosome                     1
+5 Manta_biro… Mobula biro… iucn…              2 Chromosome                     1
+6 Stegostoma… Stegostoma … ncbi…              3 Chromosome                     1

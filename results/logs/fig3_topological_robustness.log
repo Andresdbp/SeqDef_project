@@ -1,0 +1,8 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+trees: 100 | trees with a tie for top-1: 15 (sizes: 6 x 1, 8 x 14)
+# A tibble: 3 × 2
+  label                                         n
+  <chr>                                     <int>
+1 Centrophorus atromarginatus                  85
+2 8-way tie: CR Acroteriobatus + Rhinobatos    14
+3 6-way tie: CR Squatina                        1

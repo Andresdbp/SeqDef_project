@@ -1,5 +1,11 @@
 # SeqDef — revision analysis pipeline
 
+> **R2 update (2026-11-23).** This file describes the R1 analyses. For the second revision every
+> analysis was re-run on all 100 posterior trees with the package v0.2.0 code (`function.R`); the
+> current numbers are in `context.md` ("Key R2 results"), the per-script logs in `results/logs/`, and
+> the reviewer-by-reviewer mapping in `revision/R2_response_to_reviewers.md`. Where a number below
+> differs from those, the R2 value is the current one.
+
 **Repo:** `SeqDef_project/` (analysis + manuscript repo) and the sibling package repo `SeqDef/`.
 **Manuscript:** *SeqDef: An R package for phylogenetically weighted genomic prioritization across the tree of life* — JEB-2026-00140 (Major Revision, now final pre-submission).
 

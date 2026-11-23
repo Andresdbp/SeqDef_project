@@ -1,0 +1,101 @@
+ncbi_species	taxid	n_assemblies_le_snapshot	n_latest_le_snapshot	best_level_le_snapshot	first_release	n_assemblies_at_query	ncbi_synonyms
+Aetobatus narinari	87140	1	1	Scaffold	2025/04/27	1	Raja narinari
+Aetomylaeus nichofii	495821	1	1	Scaffold	2025/08/17	1	Raja niehofii
+Amblyraja radiata	386614	3	2	Chromosome	2020/02/21	3	Raja radiata
+Anoxypristis cuspidata	195290	0	0			3	Pristis cuspidatus
+Bathyraja eatonii	298348	0	0			1	Raja eatonii;Bathyraja eatoni
+Bathyraja spinosissima	2169489	0	0			2	Psammobatus spinosissimus
+Callorhinchus milii	7868	3	2	Scaffold	2010/10/19	3
+Carcharhinus albimarginatus	495832	0	0			1	Carcharias albimarginatus
+Carcharhinus amblyrhynchos	263684	2	2	Chromosome	2025/11/25	11	Carcharias amblyrhynchos
+Carcharhinus cautus	443757	0	0			3
+Carcharhinus leucas	46612	0	0			2	Carcharias leucas
+Carcharhinus longimanus	302049	1	1	Scaffold	2023/06/13	1	Squalus longimanus
+Carcharhinus melanopterus	263686	0	0			3	Carcharias melanopterus
+Carcharhinus obscurus	7807	0	0			1	Squalus obscurus
+Carcharhinus plumbeus	7808	0	0			1	Squalus plumbeus
+Carcharias taurus	30501	0	0			2	Eugomphodus taurus;Odontaspis taurus;Synodontaspis taurus;Carcharhinus taurus
+Carcharodon carcharias	13397	9	7	Chromosome	2018/10/01	9	Squalus carcharias;Carcharadon charcharias
+Centroscyllium fabricii	170813	2	0	Contig	2025/07/14	4	Spinax fabricii
+Cephaloscyllium ventriosum	740693	0	0			1	Scyllium ventriosum
+Cetorhinus maximus	57982	2	2	Chromosome	2024/06/27	2	Squalus maximus
+Chiloscyllium plagiosum	36176	5	5	Chromosome	2019/01/10	5	Scyllium plagiosum
+Chiloscyllium punctatum	137246	2	2	Chromosome	2018/08/24	2
+Chimaera phantasma	134990	0	0			1
+Dasyatis pastinaca	673854	0	0			1	Dasybatus pastinaca;Raja pastinaca;Trygon pastinaca;Dasyatis pastinacus
+Dipturus intermedius	2814718	0	0			2	Raja intermedia
+Echinorhinus cookei	7834	0	0			2
+Fontitrygon garouaensis	3355173	0	0			1	Potamotrygon garouaensis
+Galeocerdo cuvier	7819	0	0			11	Galeocerdo cuvieri;Squalus cuvier;Galeocerdo curvier
+Galeorhinus galeus	86063	4	4	Scaffold	2025/12/05	6	Squalus galeus
+Ginglymostoma cirratum	7801	1	1	Scaffold	2022/07/05	1	Squalus cirratus
+Glaucostegus cemiculus	417950	1	1	Contig	2025/11/21	1	Rhinobatos cemiculus;Rhinobatus cemiculus
+Glaucostegus typus	337882	0	0			2	Rhinobatos typus;Rhinobatus typus
+Gymnura micrura	558709	1	1	Scaffold	2025/03/30	1	Pteroplatea micrura;Raja micrura
+Harriotta raleighana	765186	1	1	Scaffold	2025/05/27	1	Harriotta haeckeli;Hariotta raleighana
+Hemiscyllium ocellatum	170820	2	2	Chromosome	2021/11/05	2	Squalus ocellatus
+Hemitrygon akajei	2704970	1	1	Chromosome	2025/03/05	1	Dasyatis akajei;Trygon akajei
+Heptranchias perlo	212740	3	2	Chromosome	2024/01/04	3	Squalus perlo;Heptranchus perlo
+Heterodontus francisci	7792	2	2	Chromosome	2024/02/06	2	Cestracion francisci;Heterodontus fransci
+Heterodontus portusjacksoni	7793	0	0			2	Squalus portusjacksoni
+Hydrolagus affinis	1459831	1	1	Scaffold	2020/04/03	1	Chimaera affinis
+Hydrolagus colliei	7873	2	2	Chromosome	2024/01/05	3	Chimaera colliei
+Hydrolagus mirabilis	1266870	1	1	Scaffold	2025/05/27	1	Bathyalopex mirabilis;Chimaera mirabilis
+Hypanus berthalutzae	2760903	1	1	Scaffold	2023/10/04	1
+Hypanus sabinus	79690	2	2	Chromosome	2023/06/05	2	Dasyatis sabina;Trygon sabina
+Isurus oxyrinchus	57983	1	1	Scaffold	2022/12/09	2	Isurus oxyrhinchus;Isurus oxyrhynchus
+Leucoraja erinaceus	7782	3	3	Chromosome	2012/01/02	3	Raja erinaceus;Leucoraja erinacea;Raja erinacea;Raja erinacia
+Leucoraja naevus	223888	1	1	Chromosome	2025/07/19	3	Raja naevus;Rhinobatus naevus
+Leucoraja ocellata	173042	2	2	Scaffold	2024/02/22	2	Raja ocellata
+Malacoraja senta	1072478	2	2	Chromosome	2024/04/12	2	Raja senta
+Mobula birostris	1983395	2	2	Chromosome	2023/05/22	2	Raja birostris
+Mobula hypostoma	723540	1	1	Chromosome	2024/01/07	1	Cephalopterus hypostomus
+Mobula japanica	495868	0	0			1	Cephaloptera japanica;Mobula japonica
+Mustelus asterias	112232	2	2	Chromosome	2024/08/11	2
+Myliobatis californica	319543	1	1	Scaffold	2025/03/31	1	Myliobatis californicus
+Myliobatis freminvillei	1072479	1	1	Scaffold	2025/03/31	1	Myliobatis freminvillii
+Narcine bancroftii	1343680	2	2	Chromosome	2024/03/06	2	Torpedo bancroftii
+Narcine brasiliensis	307038	0	0			1	Torpedo brasiliensis
+Nebrius ferrugineus	496405	0	0			3	Ginglymostoma ferrugineum;Scyllium ferrugineum;Nebrius ferrugenius
+Negaprion acutidens	263687	0	0			4	Carcharias acutidens
+Negaprion brevirostris	7821	1	1	Scaffold	2023/06/22	1	Hypoprion brevirostris
+Neotrygon leylandi	335000	0	0			1	Dasyatis leylandi
+Okamejei kenojei	432798	2	2	Chromosome	2024/01/12	2	Okamejei porosa;Raja kenojei;Raja porosa
+Orectolobus wardi	582430	0	0			3
+Potamotrygon marinae	2803083	0	0			2
+Prionace glauca	7815	1	1	Chromosome	2024/04/08	2	Squalus glaucus
+Pristiophorus japonicus	55135	2	2	Chromosome	2024/11/13	2
+Pristis pectinata	685728	3	2	Chromosome	2019/12/18	3	Pristis pectinatus
+Pristis pristis	1577861	0	0			3	Pristis microdon;Squalus pristis
+Pristis zijsron	495877	0	0			4
+Pteroplatytrygon violacea	651723	1	1	Scaffold	2025/03/31	1	Dasyatis violacea;Trygon violacea
+Raja brachyura	223862	1	0	Contig	2023/09/29	5
+Raja clavata	7781	0	0			2
+Raja microocellata	223863	0	0			2
+Raja montagui	27588	0	0			2
+Raja radula	223860	0	0			1
+Raja undulata	182855	0	0			1
+Rhina ancylostomus	3025902	1	1	Scaffold	2023/06/13	1	Rhina ancylostoma
+Rhincodon typus	259920	5	2	Chromosome	2016/05/11	6
+Rhinoraja longicauda	667116	1	1	Chromosome	2025/11/13	1
+Rhynchobatus australiae	335006	1	1	Scaffold	2023/12/28	3	Rhynchobatus australis
+Rhynchobatus djiddensis	195333	0	0			1	Raja djiddensis
+Scyliorhinus canicula	7830	4	2	Chromosome	2020/12/18	4	Squalus canicula;Scyliorhinus caniculus
+Scyliorhinus torazame	75743	2	2	Chromosome	2018/08/24	2	Catulus torazame
+Somniosus microcephalus	191813	1	1	Chromosome	2025/08/28	3	Squalus microcephalus
+Sphyrna lewini	7823	0	0			3	Zygaena lewini
+Sphyrna mokarran	195334	1	1	Scaffold	2022/08/15	2	Zygaena mokarran
+Squalus acanthias	7797	1	1	Chromosome	2023/07/03	1
+Squalus suckleyi	7798	3	3	Chromosome	2022/11/21	3	Spinax suckleyi
+Squatina squatina	263718	1	1	Scaffold	2023/09/20	1	Squalus squatina
+Stegostoma tigrinum	3053191	3	3	Chromosome	2022/02/17	3	Squalus fasciatus;Squalus tigrinus;Stegostoma fasciatum
+Taeniura lymma	86377	1	1	Scaffold	2025/03/31	1	Raja lymma
+Tetronarce nobiliana	27590	1	1	Scaffold	2025/05/26	1	Torpedo fairchildi;Torpedo nobiliana
+Torpedo marmorata	7788	1	1	Chromosome	2025/11/25	1
+Torpedo suessii	3071792	1	1	Scaffold	2023/09/28	1
+Triaenodon obesus	496413	0	0			1	Carcharias obesus
+Typhlonarke aysoni	1072514	1	1	Scaffold	2025/03/31	1	Astrape aysoni
+Urobatis halleri	86675	0	0			1	Urolophus halleri
+Urobatis jamaicensis	170826	1	1	Scaffold	2025/03/30	1	Raia jamaicensis;Urolophus jamaicensis
+Urogymnus asperrimus	195338	0	0			2	Raja asperrima
+Zearaja maugeana	496415	0	0			1	Dipturus maugeanus;Dipturus maugenus

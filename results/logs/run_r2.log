@@ -1,0 +1,23 @@
+=== figS1_lambda_stability 14:02:20
+exit 0 14:02:38
+=== figS2_edge_benchmark 14:02:38
+exit 0 14:02:46
+=== kernel_comparison 14:02:46
+exit 0 14:03:20
+=== fig1_toy_tree 14:03:20
+exit 0 14:03:21
+=== fig3_topological_robustness 14:03:21
+exit 0 14:03:23
+=== simple_measures_comparison 14:03:23
+exit 0 14:03:44
+=== stability_seqdef_vs_priority 14:03:44
+exit 0 14:04:33
+=== data_provenance 14:04:33
+exit 0 14:04:37
+=== brownian_comparison 14:04:37
+exit 0 14:04:42
+=== ncbi_map_all_tips 14:04:42
+exit 0 14:04:44
+=== full_tree_sensitivity 14:04:44
+exit 0 14:04:49
+ALLDONE

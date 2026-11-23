@@ -1,0 +1,69 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+lambda grid x 100 trees ...
+ ■■■■■                             13% |  ETA: 10s
+ ■■■■■■■■■■■■■                     39% |  ETA:  7s
+ ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  4s
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  1s
+kernels x 100 trees ...
+ ■■■                                6% |  ETA: 32s
+ ■■■■■                             14% |  ETA: 33s
+ ■■■■■■■■                          22% |  ETA: 29s
+ ■■■■■■■■■■■                       34% |  ETA: 22s
+ ■■■■■■■■■■■■■■                    42% |  ETA: 19s
+ ■■■■■■■■■■■■■■■■                  51% |  ETA: 17s
+ ■■■■■■■■■■■■■■■■■■■               59% |  ETA: 14s
+ ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  9s
+ ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  7s
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  4s
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  1s
+
+================ STABILITY: SeqDef vs Priority ================
+[lambda in 1..25, per-lambda median across 100 trees; then median (min) across the grid]
+  rho_seqdef             median 0.818  min 0.781
+  rho_seqdef_unseq       median 0.811  min 0.767
+  rho_priority           median 0.935  min 0.888
+  rho_pri_within_LC      median 0.816  min 0.766
+  rho_pri_within_NT      median 0.733  min 0.689
+  rho_pri_within_VU      median 0.840  min 0.811
+  rho_pri_within_EN      median 0.868  min 0.833
+  rho_pri_within_CR      median 0.746  min 0.700
+  jac10_seqdef           median 0.250  min 0.046
+  jac10_priority         median 0.721  min 0.667
+  top1_same              median 1.000  min 1.000
+  low-lambda detail (lambda = 1, 2, 3, 5, 10):
+# A tibble: 5 × 7
+  lambda rho_seqdef_m rho_priority_m jac10_seqdef_m jac10_priority_m
+   <dbl>        <dbl>          <dbl>          <dbl>            <dbl>
+1      1        0.881          0.888          0.136            0.667
+2      2        0.924          0.956          0.143            0.75 
+3      3        0.991          0.995          0.450            1    
+4      5        0.955          0.985          0.533            0.75 
+5     10        0.846          0.943          0.375            0.721
+# ℹ 2 more variables: top1_same_mean <dbl>, target_top1_mean <dbl>
+
+[auto_max vs by_genus]
+  rho_seqdef             1.00 [0.97, 1.00]
+  rho_seqdef_unseq       1.00 [0.97, 1.00]
+  rho_priority           1.00 [0.99, 1.00]
+  rho_pri_within_LC      0.99 [0.94, 1.00]
+  rho_pri_within_NT      1.00 [0.99, 1.00]
+  rho_pri_within_VU      1.00 [0.99, 1.00]
+  rho_pri_within_EN      1.00 [0.99, 1.00]
+  rho_pri_within_CR      1.00 [0.99, 1.00]
+  jac10_seqdef           1.00 [0.13, 1.00]
+  jac10_priority         1.00 [0.58, 1.00]
+  top1_same              1.00 [1.00, 1.00]
+
+[kernels vs exponential]
+  gaussian  lambda 1.80 [1.50, 10.11] | rho SeqDef 0.91 [0.86, 0.96] | rho Priority 0.88 [0.82, 0.96] | Jaccard top10 SeqDef 0.45 [0.09, 0.79] | same top-1 98/100
+  linear    lambda 1.30 [1.20, 1.90] | rho SeqDef 0.92 [0.86, 0.95] | rho Priority 0.94 [0.92, 0.96] | Jaccard top10 SeqDef 0.06 [0.00, 0.16] | same top-1 85/100
+  brownian  lambda NA [NA, NA] | rho SeqDef 0.83 [0.60, 0.90] | rho Priority 0.78 [0.69, 0.84] | Jaccard top10 SeqDef 0.14 [0.06, 0.26] | same top-1 24/100
+  Brownian vs linear(lambda = 0.5): max |difference| over all trees = 1.63e-08
+
+[Priority composition]
+  rho_pri_ge         0.86 [0.82, 0.87]
+  rho_pri_seqdef     0.28 [0.24, 0.33]
+  rho_seqdef_ge      -0.19 [-0.22, -0.13]
+  pairs_follow_ge    0.95 [0.93, 0.96]
+
+[stability] DONE.

@@ -1,0 +1,16 @@
+"clade_A","fam_A","NSD_A","SD_A","nseq_A","clade_B","fam_B","NSD_B","SD_B","nseq_B"
+"Callorhinchus_capensis","Callorhinchidae",0.0238672548844986,0.764646841053947,1,"Lamiopsis_temminckii","Carcharhinidae",0.206112794996595,0.329340743287117,7
+"Callorhinchus_callorynchus","Callorhinchidae",0.0353441595768236,0.779474768567165,1,"Lamiopsis_temminckii","Carcharhinidae",0.206112794996595,0.329340743287117,7
+"Callorhinchus_callorynchus","Callorhinchidae",0.0353441595768236,0.779474768567165,1,"Fenestraja_plutonia","Gurgesiellidae",0.300754243224373,0.493649730114983,7
+"Callorhinchus_capensis","Callorhinchidae",0.0238672548844986,0.764646841053947,1,"Carcharhinus_signatus","Carcharhinidae",0.182169052254997,0.287194320108921,7
+"Callorhinchus_capensis","Callorhinchidae",0.0238672548844986,0.764646841053947,1,"Fenestraja_plutonia","Gurgesiellidae",0.300754243224373,0.493649730114983,7
+"Callorhinchus_capensis","Callorhinchidae",0.0238672548844986,0.764646841053947,1,"Carcharhinus_fitzroyensis","Carcharhinidae",0.172212553232477,0.268191757256586,7
+"Callorhinchus_callorynchus","Callorhinchidae",0.0353441595768236,0.779474768567165,1,"Loxodon_macrorhinus","Carcharhinidae",0.303492102427224,0.505023925490971,7
+"Callorhinchus_capensis","Callorhinchidae",0.0238672548844986,0.764646841053947,1,"Loxodon_macrorhinus","Carcharhinidae",0.303492102427224,0.505023925490971,7
+"Callorhinchus_capensis","Callorhinchidae",0.0238672548844986,0.764646841053947,1,"Eusphyra_blochii","Sphyrnidae",0.209523185264615,0.374691652690756,7
+"Callorhinchus_callorynchus","Callorhinchidae",0.0353441595768236,0.779474768567165,1,"Carcharhinus_signatus","Carcharhinidae",0.182169052254997,0.287194320108921,7
+"Callorhinchus_callorynchus","Callorhinchidae",0.0353441595768236,0.779474768567165,1,"Eusphyra_blochii","Sphyrnidae",0.209523185264615,0.374691652690756,7
+"Callorhinchus_callorynchus","Callorhinchidae",0.0353441595768236,0.779474768567165,1,"Carcharhinus_fitzroyensis","Carcharhinidae",0.172212553232477,0.268191757256586,7
+"Callorhinchus_callorynchus","Callorhinchidae",0.0353441595768236,0.779474768567165,1,"Galeocerdo_cuvier","Carcharhinidae",0.323667920150508,0.538381535383113,7
+"Callorhinchus_capensis","Callorhinchidae",0.0238672548844986,0.764646841053947,1,"Galeocerdo_cuvier","Carcharhinidae",0.323667920150508,0.538381535383113,7
+"Callorhinchus_capensis","Callorhinchidae",0.0238672548844986,0.764646841053947,1,"Sphyrna_zygaena","Sphyrnidae",0.19293968037591,0.365289691957875,7

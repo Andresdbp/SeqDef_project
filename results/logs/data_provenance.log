@@ -1,0 +1,45 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+There were 50 or more warnings (use warnings() to see the first 50)
+== PHYLOGENY == 
+VertLife/Stein et al. 2018 posterior: 100 trees, 1192 tips each (identical tip sets across trees: TRUE) 
+All trees binary: TRUE; ultrametric up to rounding (max relative spread of root-to-tip depths: 2.0e-08) 
+== IUCN (class Chondrichthyes, latest global assessments) == 
+assessment records: 1266 (unique names: 1266) 
+categories: CR=98, EN=128, VU=196, NT=134, LC=558, DD=151, NE=0, EX=1 
+IUCN access date(s) recorded in the assessment citations: Accessed on 10 December 2025 (Red List version current on that date: 2025-2, released 10 Oct 2025) 
+assessment years published: 2009 to 2025; most recent assessment date: 2025-06-19 
+== NAME MATCHING (exact string match after whitespace squish, space -> underscore; no synonym resolution) == 
+tree tips matching an IUCN accepted name (any category): 980 / 1192 
+tree tips with no exact IUCN match (lost at the tree-IUCN join): 212 
+matched tips excluded as DD: 102; NE: 0; EX: 1 
+analysed species (tree n IUCN, categories LC-CR): 877 
+IUCN-assessed species (LC-CR) absent from the tree by exact name: 237 
+of the 212 unmatched tips, 167 match an IUCN synonym (DD among them: 10); 30 of these synonyms point to an accepted name that is itself a separate tip (taxonomic lumping) 
+== DD / NE handling == 
+DD and NE species are removed before the intersection (no Priority weight can be assigned); they are therefore also absent from the tree on which SeqDef is computed. 
+== NCBI ASSEMBLIES == 
+NCBI table rows: 877 (queried for the analysed species only); tips coded S = 1: 55; S = 0: 822 
+assembly count per sequenced species: 1:29, 2:15, 3:6, 4:2, 5:2, 9:1 
+NCBI query: Assembly database, all records for the species (any level, GenBank/RefSeq, any status) released on or before 2025-12-30 (R1 table compiled 30 Dec 2025); reproduced on 2026-11-23 with ncbi_query_all_tips.R (term 'Chondrichthyes[Organism]') -- see ncbi_map_all_tips.R for the reconciliation 
+families in analysis: 63; with >= 1 assembly: 33; without: 30 
+Centrophoridae species in analysis: 10, with assembly: 0 
+== IMPUTED TIPS (Stein et al. 2018, Supplementary Table 1, column 'Data type') == 
+all 1,192 tips: molecular 609, imputed (taxonomic constraints) 581, not found in table 2 
+877 analysed tips: molecular 498, imputed 379 
+55 sequenced (S = 1) tips: molecular 49, imputed 6 
+  Centrophorus_atromarginatus    molecular 
+  Rhinobatos_albomaculatus       imputed 
+  Rhinobatos_jimbaranensis       molecular 
+  Rhinobatos_annandalei          molecular 
+  Acroteriobatus_variegatus      molecular 
+  Rhinobatos_rhinobatos          molecular 
+  Rhinobatos_irvinei             imputed 
+  Rhinobatos_lionotus            imputed 
+  Rhinobatos_schlegelii          molecular 
+  Squatina_argentina             imputed 
+  Squatina_armata                molecular 
+  Squatina_japonica              molecular 
+  Squatina_legnota               molecular 
+  Squatina_occulta               molecular 
+  Squatina_oculata               imputed 
+Centrophoridae in analysis: Deania_quadrispinosa (molecular), Deania_profundorum (molecular), Centrophorus_seychellorum (imputed), Centrophorus_isodon (molecular), Centrophorus_harrissoni (molecular), Centrophorus_tessellatus (imputed), Centrophorus_moluccensis (molecular), Centrophorus_squamosus (molecular), Centrophorus_granulosus (molecular), Centrophorus_atromarginatus (molecular) 

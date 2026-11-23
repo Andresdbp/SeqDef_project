@@ -1,0 +1,67 @@
+"comparison","stat","value"
+"lambda grid (median across grid of per-lambda medians)","rho_seqdef",0.818254321182284
+"lambda grid (median across grid of per-lambda medians)","rho_seqdef_unseq",0.810989651872006
+"lambda grid (median across grid of per-lambda medians)","rho_priority",0.934989353192967
+"lambda grid (median across grid of per-lambda medians)","rho_pri_within_LC",0.815837876365613
+"lambda grid (median across grid of per-lambda medians)","rho_pri_within_NT",0.733106945217074
+"lambda grid (median across grid of per-lambda medians)","rho_pri_within_VU",0.840199059625739
+"lambda grid (median across grid of per-lambda medians)","rho_pri_within_EN",0.867886801694968
+"lambda grid (median across grid of per-lambda medians)","rho_pri_within_CR",0.7461017055731
+"lambda grid (median across grid of per-lambda medians)","jac10_seqdef",0.25
+"lambda grid (median across grid of per-lambda medians)","jac10_priority",0.721153846153846
+"lambda grid (median across grid of per-lambda medians)","top1_same",1
+"lambda grid (median across grid of per-lambda medians)","target_top1",1
+"auto_max vs by_genus","rho_seqdef",0.995974495728284
+"auto_max vs by_genus","rho_seqdef_unseq",0.995969685252634
+"auto_max vs by_genus","rho_priority",0.998165213367057
+"auto_max vs by_genus","rho_pri_within_LC",0.991691885562294
+"auto_max vs by_genus","rho_pri_within_NT",0.997747564789406
+"auto_max vs by_genus","rho_pri_within_VU",0.997574054025262
+"auto_max vs by_genus","rho_pri_within_EN",0.997763122283135
+"auto_max vs by_genus","rho_pri_within_CR",0.996370327781708
+"auto_max vs by_genus","jac10_seqdef",1
+"auto_max vs by_genus","jac10_priority",1
+"auto_max vs by_genus","top1_same",1
+"kernel gaussian vs exponential","rho_seqdef",0.913661043021149
+"kernel gaussian vs exponential","rho_seqdef_unseq",0.940524161350966
+"kernel gaussian vs exponential","rho_priority",0.880312437290902
+"kernel gaussian vs exponential","rho_pri_within_LC",0.887906695769036
+"kernel gaussian vs exponential","rho_pri_within_NT",0.911266328524505
+"kernel gaussian vs exponential","rho_pri_within_VU",0.912469581694695
+"kernel gaussian vs exponential","rho_pri_within_EN",0.926999381318621
+"kernel gaussian vs exponential","rho_pri_within_CR",0.94132934535871
+"kernel gaussian vs exponential","jac10_seqdef",0.454044117647059
+"kernel gaussian vs exponential","jac10_priority",0.705882352941177
+"kernel gaussian vs exponential","top1_same",1
+"kernel gaussian vs exponential","lambda",1.8
+"kernel gaussian vs exponential","max_abs_diff_bm_vs_linear05",8.91007662096044e-09
+"kernel linear vs exponential","rho_seqdef",0.919901492807633
+"kernel linear vs exponential","rho_seqdef_unseq",0.912348128753643
+"kernel linear vs exponential","rho_priority",0.94493127438158
+"kernel linear vs exponential","rho_pri_within_LC",0.85173547396212
+"kernel linear vs exponential","rho_pri_within_NT",0.94635789478921
+"kernel linear vs exponential","rho_pri_within_VU",0.96242336506848
+"kernel linear vs exponential","rho_pri_within_EN",0.963402715326765
+"kernel linear vs exponential","rho_pri_within_CR",0.959875292507496
+"kernel linear vs exponential","jac10_seqdef",0.057144723092999
+"kernel linear vs exponential","jac10_priority",0.692307692307692
+"kernel linear vs exponential","top1_same",1
+"kernel linear vs exponential","lambda",1.3
+"kernel linear vs exponential","max_abs_diff_bm_vs_linear05",8.91007662096044e-09
+"kernel brownian vs exponential","rho_seqdef",0.834173671438426
+"kernel brownian vs exponential","rho_seqdef_unseq",0.871645040600786
+"kernel brownian vs exponential","rho_priority",0.781757413293141
+"kernel brownian vs exponential","rho_pri_within_LC",0.788784404686592
+"kernel brownian vs exponential","rho_pri_within_NT",0.824532627830872
+"kernel brownian vs exponential","rho_pri_within_VU",0.841127344278964
+"kernel brownian vs exponential","rho_pri_within_EN",0.851603641772207
+"kernel brownian vs exponential","rho_pri_within_CR",0.89625299266082
+"kernel brownian vs exponential","jac10_seqdef",0.136363636363636
+"kernel brownian vs exponential","jac10_priority",0.166666666666667
+"kernel brownian vs exponential","top1_same",0
+"kernel brownian vs exponential","lambda",NA
+"kernel brownian vs exponential","max_abs_diff_bm_vs_linear05",8.91007662096044e-09
+"Priority composition","rho_pri_ge",0.855119437808671
+"Priority composition","rho_pri_seqdef",0.27830879599319
+"Priority composition","rho_seqdef_ge",-0.187912776161674
+"Priority composition","pairs_follow_ge",0.950279472886227

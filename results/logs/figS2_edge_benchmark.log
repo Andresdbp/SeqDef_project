@@ -1,0 +1,66 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+
+[EDGE benchmark on MCC tree] n = 877 
+  Spearman rho(EDGE,  Priority) = 0.832
+  Spearman rho(EDGE2, Priority) = 0.790
+  Spearman rho(EDGE,  SeqDef)   = 0.071
+  Spearman rho(ED,    SeqDef)   = 0.409
+  top-25 overlap EDGE vs Priority  = 9/25
+  top-25 overlap EDGE2 vs Priority = 8/25
+  Centrophorus_atromarginatus: Priority rank 9, EDGE rank 43, EDGE2 rank 52, SeqDef rank 89 (IUCN CR)
+
+[Divergence] top high-EDGE / low-SeqDef species with a sequenced congener (by rank gap):
+# A tibble: 6 × 9
+  species     iucn     ED rank_EDGE SeqDef rank_SeqDef rank_Priority   gap genus
+  <chr>       <chr> <dbl>     <int>  <dbl>       <int>         <int> <int> <chr>
+1 Carcharhin… CR     20.5        83  0.208         841           185   758 Carc…
+2 Sphyrna_le… CR     31.4        40  0.365         779           103   739 Sphy…
+3 Sphyrna_co… CR     25.4        53  0.365         782           106   729 Sphy…
+4 Carcharhin… EN     35.6        89  0.287         801           247   712 Carc…
+5 Sphyrna_tu… CR     21.1        78  0.365         780           104   702 Sphy…
+6 Sphyrna_me… CR     21.1        78  0.365         780           104   702 Sphy…
+
+[Like-for-like] rho(ED, SeqDef) = 0.409 | rho(EDGE, Priority) = 0.832
+# A tibble: 5 × 6
+  species                 iucn  rank_ED rank_SeqDef rank_EDGE rank_Priority
+  <chr>                   <chr>   <int>       <int>     <int>         <int>
+1 Sphyrna_lewini          CR        269         779        40           103
+2 Sphyrna_tudes           CR        451         780        78           104
+3 Sphyrna_corona          CR        369         782        53           106
+4 Carcharhinus_borneensis CR        474         841        83           185
+5 Carcharhinus_signatus   EN        200         801        89           247
+
+Largest EDGE -> Priority demotions among EDGE top-100 (threat-weighted, like for like):
+# A tibble: 10 × 6
+   species                   iucn  has_assembly rank_EDGE rank_Priority demotion
+   <chr>                     <chr>        <dbl>     <int>         <int>    <int>
+ 1 Sphyrna_mokarran          CR               1        20           223      203
+ 2 Carcharhinus_signatus     EN               0        89           247      158
+ 3 Leptocharias_smithii      VU               0        98           238      140
+ 4 Zanobatus_schoenleinii    VU               0        18           146      128
+ 5 Aetobatus_narinari        EN               1        26           140      114
+ 6 Callorhinchus_callorynch… VU               0        96           208      112
+ 7 Cetorhinus_maximus        EN               1        28           139      111
+ 8 Carcharhinus_borneensis   CR               0        83           185      102
+ 9 Galeorhinus_galeus        CR               1         6           107      101
+10 Rostroraja_alba           EN               0        77           178      101
+
+Largest Priority promotions relative to EDGE among Priority top-100:
+# A tibble: 10 × 5
+   species                   iucn  rank_EDGE rank_Priority promotion
+   <chr>                     <chr>     <int>         <int>     <int>
+ 1 Urolophus_orarius         EN          191            76       115
+ 2 Centrophorus_granulosus   EN          182            70       112
+ 3 Halaelurus_buergeri       EN          187            80       107
+ 4 Cephaloscyllium_fasciatum CR          136            37        99
+ 5 Squatina_guggenheim       EN          189            92        97
+ 6 Squatina_nebulosa         EN          180            84        96
+ 7 Squatina_formosa          EN          180            84        96
+ 8 Centrophorus_isodon       EN          165            71        94
+ 9 Centrophorus_harrissoni   EN          165            71        94
+10 Squatina_argentina        CR          102            11        91
+Warning message:
+In annotate("label", x = 0, y = 1, hjust = 0, vjust = 1, parse = TRUE,  :
+  Ignoring unknown parameters: `label.size`
+
+[figS2] DONE. Wrote results/edge_benchmark.csv, results/edge_divergence.csv, figures/figS2_edge_vs_seqdef.pdf

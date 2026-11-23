@@ -1,0 +1,14 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+tips: 1192 | with assembly: 60 | assessed LC-CR: 1005 (exact 877 + via IUCN synonym 128)
+ ■■■■■■■■■■■■■■                    42% |  ETA:  2s
+lambda (full tree) 3.20 [2.45, 5.35] vs R1 3.40 [2.65, 5.00]
+rho Priority vs R1 (common species): 0.985 [0.945, 0.994]
+rho SeqDef   vs R1 (common species): 0.964 [0.925, 0.980]
+C. atromarginatus unique top-1: 97 / 100 trees (R1: 85); median rank 1
+# A tibble: 4 × 2
+  label                                    n
+  <chr>                                <int>
+1 Centrophorus_atromarginatus             97
+2 5-way tie: Squatina                      1
+3 6-way tie: Squatina                      1
+4 9-way tie: Acroteriobatus+Rhinobatos     1

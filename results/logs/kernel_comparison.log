@@ -1,0 +1,20 @@
+Setup loaded: 100 posterior trees, 1114 IUCN species, 877 NCBI rows, MCC tips = 1192
+02: kernel comparison on MCC + all 100 posterior trees...
+ ■■                                 3% |  ETA: 40s
+ ■■■■                              11% |  ETA: 32s
+ ■■■■■■■                           20% |  ETA: 27s
+ ■■■■■■■■■■■                       33% |  ETA: 20s
+ ■■■■■■■■■■■■■                     39% |  ETA: 20s
+ ■■■■■■■■■■■■■■■                   48% |  ETA: 17s
+ ■■■■■■■■■■■■■■■■■■                56% |  ETA: 15s
+ ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA: 11s
+ ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  7s
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  4s
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% |  ETA:  0s
+
+[Kernel comparison] (n = 100 posterior trees)
+  auto_max lambda (median): exp 3.40 | gaussian 1.80 | linear 1.30  (brownian: parameter-free)
+  rho(Priority vs exponential): gaussian 0.88 [0.82, 0.96] | linear 0.94 [0.92, 0.96] | brownian 0.78 [0.69, 0.84]
+  C. atromarginatus top target (of 100): exp 85 | gaussian 83 | linear 87 | brownian 23
+
+[kernel] DONE. Wrote results/kernel_comparison.csv (values reported in the manuscript text).

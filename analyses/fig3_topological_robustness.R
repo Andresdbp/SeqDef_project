@@ -21,9 +21,9 @@ cnt <- tab %>% count(label, sort = TRUE)
 cat(sprintf("trees: %d | trees with a tie for top-1: %d (sizes: %s)\n", nrow(tab), sum(tab$n_tied > 1),
             paste(names(table(tab$n_tied[tab$n_tied > 1])), "x", table(tab$n_tied[tab$n_tied > 1]), collapse = ", ")))
 print(cnt)
-p <- ggplot(cnt, aes(n, reorder(label, n))) + geom_col(fill = c("#D73027", rep("grey60", nrow(cnt) - 1))) +
+p <- ggplot(cnt, aes(n, reorder(label, n))) + geom_col(fill = "#C96E18", width = 0.7) +
   geom_text(aes(label = n), hjust = -0.3, size = 3.4) + scale_x_continuous(limits = c(0, 100), expand = expansion(mult = c(0, .02))) +
   labs(x = "Number of posterior trees (of 100) in which the set ranks first", y = NULL) +
-  theme_minimal(base_size = 11) + theme(panel.grid.major.y = element_blank(), axis.text.y = element_text(face = "italic"))
+  theme_minimal(base_size = 11) + theme(panel.grid.major.y = element_blank(), axis.line.y = element_line(colour = "black"), axis.text.y = element_text(face = "italic"))
 ggsave("figures/fig3.pdf", p, width = 7.5, height = 2.6)
 ggsave("figures/png/fig3.png", p, width = 7.5, height = 2.6, dpi = 300)

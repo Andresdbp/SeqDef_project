@@ -127,10 +127,12 @@ pA <- ggplot(long(c("rho_seqdef", "rho_priority")), aes(lambda, m, colour = what
 pB <- ggplot(long(c("jac10_seqdef", "jac10_priority")), aes(lambda, m, colour = what, fill = what)) + band +
   geom_ribbon(aes(ymin = lo, ymax = hi), alpha = .18, colour = NA) + geom_line(linewidth = .9) +
   scale_colour_manual(values = cols, name = NULL) + scale_fill_manual(values = cols, name = NULL) +
-  coord_cartesian(ylim = c(0, 1)) + labs(x = expression(lambda), y = "Top-10 agreement with auto_max (Jaccard; ties included)", tag = "B") +
+  coord_cartesian(ylim = c(0, 1)) + labs(x = expression(lambda), y = "Top-10 agreement with auto_max\n(Jaccard; ties included)", tag = "B") +
   theme_minimal(base_size = 10) + theme(legend.position = "bottom")
-pC <- ggplot(gsum, aes(lambda, target_top1_mean)) + band + geom_line(colour = "#D73027", linewidth = .9) + geom_point(colour = "#D73027", size = 1) +
+pC <- ggplot(gsum, aes(lambda, target_top1_mean)) + band + geom_line(colour = cols[["Priority"]], linewidth = .9) + geom_point(colour = cols[["Priority"]], size = 1) +
   coord_cartesian(ylim = c(0, 1)) + labs(x = expression(lambda), y = expression("Fraction of trees with " * italic("C. atromarginatus") * " top-ranked"), tag = "C") +
   theme_minimal(base_size = 10)
+pA <- pA + theme(plot.tag.position = c(0.97, 0.97)); pB <- pB + theme(plot.tag.position = c(0.97, 0.97)); pC <- pC + theme(plot.tag.position = c(0.97, 0.97))  # panel letters top-right, as in the R1 Fig. S1
 ggsave("figures/figS1_lambda_stability.pdf", patchwork::wrap_plots(pA, pB, pC, nrow = 1), width = 13, height = 4.3)
+ggsave("figures/png/figS1_lambda_stability.png", patchwork::wrap_plots(pA, pB, pC, nrow = 1), width = 13, height = 4.3, dpi = 300)
 cat("\n[stability] DONE.\n")
